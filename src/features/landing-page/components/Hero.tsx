@@ -133,7 +133,7 @@ const Hero: React.FC = () => {
                 
                 {/* التعديل هنا: الصورة أصبحت تأخذ 100% عرض وارتفاع الديف وتتجاوب تلقائياً */}
                 <img
-                  src="/logo.jpg" 
+                  src="/logo.jpeg" 
                   alt="Medix Brand Logo"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                 />

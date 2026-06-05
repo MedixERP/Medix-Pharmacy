@@ -12,7 +12,7 @@ const Footer: React.FC = () => {
             <div className="flex items-center gap-3">
               {/* تم استبدال المربع التقليدي بحرف M باللوجو الموحد الفاخر من الـ public */}
               <img 
-                src="/logo.jpg" 
+                src="/logo.jpeg" 
                 alt="Medix Logo" 
                 className="w-10 h-10 object-contain shadow-md bg-white/5 p-1 rounded-xl border border-white/10"
               />

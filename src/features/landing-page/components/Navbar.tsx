@@ -26,7 +26,7 @@ const Navbar: React.FC = () => {
         <a href="#home" className="flex items-center gap-2.5 cursor-pointer group">
           {/* تم استبدال الـ div المربع باللوجو الرسمي النظيف الخاص بكِ من الـ public */}
           <img 
-            src="/logo.jpg" 
+            src="/logo.jpeg" 
             alt="Medix Logo" 
             className="w-9 h-9 object-contain shadow-sm group-hover:scale-105 group-hover:shadow-cyan-500/10 transition-all duration-300 rounded-xl"
           />

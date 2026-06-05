@@ -124,15 +124,18 @@ const Hero: React.FC = () => {
                 <div className="ml-4 flex-1 h-5 rounded-full bg-slate-50 border border-slate-100 max-w-[180px]" />
               </div>
 
-              <div className="relative flex-1 h-full overflow-hidden rounded-b-xl group mt-2">
+              {/* منطقة عرض اللوجو من الفولدر public */}
+              <div className="relative flex-1 h-full overflow-hidden rounded-b-xl group mt-2 bg-slate-50 flex items-center justify-center p-8">
+                {/* تم استبدال الصورة العشوائية القديمة باللوجو المباشر من الـ public */}
                 <img
-                  src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80"
-                  alt="Medix Dashboard"
-                  className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700 ease-out"
+                  src="/logo.jpg" 
+                  alt="Medix Brand Logo"
+                  className="max-w-[660px] max-h-[660px] object-contain group-hover:scale-105 transition-transform duration-500 ease-out drop-shadow-md"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1B2A49]/40 via-transparent to-transparent" />
+                
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-100/30 via-transparent to-transparent pointer-events-none" />
 
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-20">
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-20 opacity-0 group-hover:opacity-100 bg-[#1B2A49]/5 backdrop-blur-[2px] transition-all duration-300">
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -142,7 +145,7 @@ const Hero: React.FC = () => {
                       <path d="M8 5v14l11-7z" />
                     </svg>
                   </motion.div>
-                  <p className="font-bold text-white text-[11px] tracking-widest uppercase drop-shadow-sm">VIEW LIVE DEMO</p>
+                  <p className="font-bold text-[#1B2A49] text-[11px] tracking-widest uppercase drop-shadow-sm">VIEW LIVE DEMO</p>
                 </div>
               </div>
             </div>

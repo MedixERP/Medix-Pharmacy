@@ -22,11 +22,14 @@ const Navbar: React.FC = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Logo */}
+        {/* Logo Section */}
         <a href="#home" className="flex items-center gap-2.5 cursor-pointer group">
-          <div className="w-9 h-9 rounded-xl bg-[#1B2A49] flex items-center justify-center text-white font-bold text-base shadow-md group-hover:shadow-cyan-500/20 transition-all duration-300">
-            M
-          </div>
+          {/* تم استبدال الـ div المربع باللوجو الرسمي النظيف الخاص بكِ من الـ public */}
+          <img 
+            src="/logo.jpg" 
+            alt="Medix Logo" 
+            className="w-9 h-9 object-contain shadow-sm group-hover:scale-105 group-hover:shadow-cyan-500/10 transition-all duration-300 rounded-xl"
+          />
           <span className="font-bold text-xl text-[#1B2A49] tracking-tight">Medix</span>
         </a>
 
@@ -54,7 +57,7 @@ const Navbar: React.FC = () => {
           <button className="text-[#1B2A49] text-sm font-bold cursor-pointer hover:bg-slate-100 px-4 py-2 rounded-full transition-all duration-200">
             Login
           </button>
-          <button className="bg-[#1B2A49] hover:bg-[#253b66] text-white text-sm px-5 py-2 rounded-full font-bold transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5">
+          <button className="bg-[#1B2A49] hover:bg-[#24375d] text-white text-sm px-5 py-2 rounded-full font-bold transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5">
             Register
           </button>
         </div>

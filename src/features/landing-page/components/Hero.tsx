@@ -29,7 +29,6 @@ const AnimatedBorderButton: React.FC<AnimBtnProps> = ({ children, primary = fals
         }
       `}
     >
-      {/* تأثير لمعة المراية الزجاجية الخاطفة الفخمة عند الـ Hover فقط */}
       <motion.div 
         initial={{ left: "-100%" }}
         animate={isHovered ? { left: "100%" } : { left: "-100%" }}
@@ -37,7 +36,6 @@ const AnimatedBorderButton: React.FC<AnimBtnProps> = ({ children, primary = fals
         className="absolute top-0 bottom-0 w-16 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 pointer-events-none z-20"
       />
 
-      {/* محتوى الزرار */}
       <span className="relative z-10 flex items-center gap-2">
         {children}
       </span>
@@ -78,6 +76,7 @@ const Hero: React.FC = () => {
       <Blob className="top-1/3 right-1/12 w-96 h-96 bg-cyan-200/40" delay={2} />
 
       <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10 w-full">
+        {/* Left Content */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
@@ -109,6 +108,7 @@ const Hero: React.FC = () => {
           </div>
         </motion.div>
 
+        {/* Right Image Container */}
         <motion.div
           initial={{ opacity: 0, scale: 0.98, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -116,26 +116,32 @@ const Hero: React.FC = () => {
         >
           <TiltCard>
             <div className="absolute -inset-4 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-[2.5rem] blur-2xl opacity-10 pointer-events-none" />
-            <div className="relative w-full aspect-[4/3] rounded-2xl shadow-xl overflow-hidden border border-slate-200/80 bg-white p-2">
-              <div className="flex items-center gap-1.5 px-3 pb-3 pt-1 border-b border-slate-100 bg-white shrink-0">
+            
+            {/* الكارد الرئيسي - تم تغيير التنسيق ليكون Flex وموزع صح */}
+            <div className="relative w-full aspect-[4/3] rounded-2xl shadow-xl overflow-hidden border border-slate-200/80 bg-white flex flex-col">
+              
+              {/* شريط المتصفح العلوي */}
+              <div className="flex items-center gap-1.5 px-4 py-3 border-b border-slate-100 bg-white shrink-0">
                 <span className="w-3 h-3 rounded-full bg-[#ff5f56]" />
                 <span className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
                 <span className="w-3 h-3 rounded-full bg-[#27c93f]" />
                 <div className="ml-4 flex-1 h-5 rounded-full bg-slate-50 border border-slate-100 max-w-[180px]" />
               </div>
 
-              {/* منطقة عرض اللوجو من الفولدر public */}
-              <div className="relative flex-1 h-full overflow-hidden rounded-b-xl group mt-2 bg-slate-50 flex items-center justify-center p-8">
-                {/* تم استبدال الصورة العشوائية القديمة باللوجو المباشر من الـ public */}
+              {/* منطقة الصورة - تم إزالة الـ p-8 والـ mt-2 وجعلها تأخذ المساحة المتبقية كاملة h-full flex-1 */}
+              <div className="relative flex-1 h-full w-full overflow-hidden rounded-b-xl group bg-slate-50">
+                
+                {/* التعديل هنا: الصورة أصبحت تأخذ 100% عرض وارتفاع الديف وتتجاوب تلقائياً */}
                 <img
                   src="/logo.jpg" 
                   alt="Medix Brand Logo"
-                  className="max-w-[660px] max-h-[660px] object-contain group-hover:scale-105 transition-transform duration-500 ease-out drop-shadow-md"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                 />
                 
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-100/30 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-100/20 via-transparent to-transparent pointer-events-none" />
 
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-20 opacity-0 group-hover:opacity-100 bg-[#1B2A49]/5 backdrop-blur-[2px] transition-all duration-300">
+                {/* الـ Hover Effect */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-20 opacity-0 group-hover:opacity-100 bg-[#1B2A49]/10 backdrop-blur-[3px] transition-all duration-300">
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -145,9 +151,10 @@ const Hero: React.FC = () => {
                       <path d="M8 5v14l11-7z" />
                     </svg>
                   </motion.div>
-                  <p className="font-bold text-[#1B2A49] text-[11px] tracking-widest uppercase drop-shadow-sm">VIEW LIVE DEMO</p>
+                  <p className="font-bold text-white text-[11px] tracking-widest uppercase drop-shadow-md">VIEW LIVE DEMO</p>
                 </div>
               </div>
+
             </div>
           </TiltCard>
         </motion.div>

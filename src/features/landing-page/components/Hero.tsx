@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiArrowRight, FiLogIn } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 interface AnimBtnProps {
   children: React.ReactNode;
@@ -70,6 +71,8 @@ const Blob: React.FC<{ className: string; delay?: number }> = ({ className, dela
 );
 
 const Hero: React.FC = () => {
+  const navigate = useNavigate(); // تفعيل الـ Navigation للتحويل بين الصفحات
+
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center pt-32 pb-20 overflow-hidden bg-gradient-to-b from-[#f1f5f9] via-[#f8fafc] to-[#ffffff]">
       <Blob className="top-1/4 left-1/12 w-96 h-96 bg-blue-200/50" />
@@ -99,10 +102,20 @@ const Hero: React.FC = () => {
           </p>
 
           <div className="flex flex-wrap gap-5 items-center">
-            <AnimatedBorderButton primary icon={<FiArrowRight size={16} />}>
+            {/* ربط زر الـ Register */}
+            <AnimatedBorderButton 
+              primary 
+              icon={<FiArrowRight size={16} />} 
+              onClick={() => navigate('/register')}
+            >
               Register Pharmacy
             </AnimatedBorderButton>
-            <AnimatedBorderButton icon={<FiLogIn size={16} />}>
+            
+            {/* ربط زر الـ Sign In */}
+            <AnimatedBorderButton 
+              icon={<FiLogIn size={16} />} 
+              onClick={() => navigate('/login')}
+            >
               Sign In
             </AnimatedBorderButton>
           </div>
@@ -117,7 +130,6 @@ const Hero: React.FC = () => {
           <TiltCard>
             <div className="absolute -inset-4 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-[2.5rem] blur-2xl opacity-10 pointer-events-none" />
             
-            {/* الكارد الرئيسي - تم تغيير التنسيق ليكون Flex وموزع صح */}
             <div className="relative w-full aspect-[4/3] rounded-2xl shadow-xl overflow-hidden border border-slate-200/80 bg-white flex flex-col">
               
               {/* شريط المتصفح العلوي */}
@@ -128,10 +140,8 @@ const Hero: React.FC = () => {
                 <div className="ml-4 flex-1 h-5 rounded-full bg-slate-50 border border-slate-100 max-w-[180px]" />
               </div>
 
-              {/* منطقة الصورة - تم إزالة الـ p-8 والـ mt-2 وجعلها تأخذ المساحة المتبقية كاملة h-full flex-1 */}
+              {/* منطقة الصورة اللوجو الموحد */}
               <div className="relative flex-1 h-full w-full overflow-hidden rounded-b-xl group bg-slate-50">
-                
-                {/* التعديل هنا: الصورة أصبحت تأخذ 100% عرض وارتفاع الديف وتتجاوب تلقائياً */}
                 <img
                   src="/logo.jpeg" 
                   alt="Medix Brand Logo"
@@ -140,7 +150,7 @@ const Hero: React.FC = () => {
                 
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-100/20 via-transparent to-transparent pointer-events-none" />
 
-                {/* الـ Hover Effect */}
+                {/* الـ Hover Effect للـ Live Demo */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-20 opacity-0 group-hover:opacity-100 bg-[#1B2A49]/10 backdrop-blur-[3px] transition-all duration-300">
                   <motion.div
                     whileHover={{ scale: 1.05 }}

@@ -1,8 +1,12 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -24,7 +28,6 @@ const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo Section */}
         <a href="#home" className="flex items-center gap-2.5 cursor-pointer group">
-          {/* تم استبدال الـ div المربع باللوجو الرسمي النظيف الخاص بكِ من الـ public */}
           <img 
             src="/logo.jpeg" 
             alt="Medix Logo" 
@@ -52,12 +55,21 @@ const Navbar: React.FC = () => {
           ))}
         </ul>
 
-        {/* CTA */}
+        {/* CTA Actions Group */}
         <div className="flex items-center gap-3">
-          <button className="text-[#1B2A49] text-sm font-bold cursor-pointer hover:bg-slate-100 px-4 py-2 rounded-full transition-all duration-200">
+          {/* تم ربط روت اللوجين هنا بـ onClick وتوجيهه للمسار الصحيح */}
+          <button 
+            onClick={() => navigate('/login')}
+            className="text-[#1B2A49] text-sm font-bold cursor-pointer hover:bg-slate-100 px-4 py-2 rounded-full transition-all duration-200"
+          >
             Login
           </button>
-          <button className="bg-[#1B2A49] hover:bg-[#24375d] text-white text-sm px-5 py-2 rounded-full font-bold transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5">
+          
+          {/* تم ربط روت الـ Register هنا بنفس الأسلوب الاحترافي */}
+          <button 
+            onClick={() => navigate('/register')}
+            className="bg-[#1B2A49] hover:bg-[#24375d] text-white text-sm px-5 py-2 rounded-full font-bold transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
+          >
             Register
           </button>
         </div>

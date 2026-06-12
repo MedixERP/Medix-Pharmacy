@@ -2,7 +2,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ROUTES } from './routes';
-import useAuth from '../hooks/useAuth'; // استيراد الـ هوك لقراءة الـ Role الحالية
+import useAuth from '../hooks/useAuth'; 
 
 // Layouts & Guards
 import RoleGuard from '../components/layout/RoleGuard';

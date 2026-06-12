@@ -2,6 +2,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ROUTES } from './routes';
+import useAuth from '../hooks/useAuth'; // استيراد الـ هوك لقراءة الـ Role الحالية
 
 // Layouts & Guards
 import RoleGuard from '../components/layout/RoleGuard';
@@ -24,45 +25,56 @@ const EditProduct = lazy(() => import('../pages/supplier/EditProduct'));
 const AnalyticsReports = lazy(() => import('../pages/supplier/Reports'));
 const Settings = lazy(() => import('../pages/supplier/Settings'));
 
-// Pharmacist Dashboard Page
+// Pharmacist Pages
 const PharmacistDashboard = lazy(() => import('../pages/pharmacist/Dashboard'));
 
-// 💡 مكون مرن مؤقت للشاشات الأخرى لتجنب إيرور الـ Import لحين بنائها
-const PharmacistPlaceholder = ({ title }: { title: string }) => (
-  <div className="glass-light p-8 rounded-2xl text-center space-y-2 animate-in fade-in">
-    <h2 className="text-xl font-bold text-[#1b2a49]">{title} Screen</h2>
-    <p className="text-sm text-slate-400">This screen is fully integrated into the layout structure and ready for content.</p>
+// مكون مؤقت احترافي للشاشات غير المكتوبة بعد
+const PlaceholderPage = ({ title }: { title: string }) => (
+  <div className="p-6 bg-white rounded-2xl border border-slate-100 shadow-[0_10px_30px_rgba(27,42,73,0.02)] animate-in fade-in duration-300">
+    <h2 className="text-xl font-bold text-[#1b2a49] mb-2">{title} Screen</h2>
+    <p className="text-xs text-slate-400 font-medium">هذه الشاشة مدمجة بالكامل في الـ Layout ومتناسقة مع الـ Sidebar والـ Navbar.</p>
   </div>
 );
 
-const PageLoader = () => (
-  <div className="w-full h-screen bg-white flex items-center justify-center flex-col gap-3">
-    <div className="w-10 h-10 border-4 border-slate-100 border-t-blue-600 rounded-full animate-spin"></div>
-    <p className="text-xs font-bold text-[#1b2a49] tracking-wider uppercase opacity-60">Loading Medix Portal...</p>
-  </div>
-);
+// ⚡ الـ Redirect الذكي: بيقرأ الـ Role الحالية ويوجّه للمكان الصح فوراً من المسار الرئيسي "/"
+const RootRedirect = () => {
+  const { user, isAuthenticated } = useAuth();
+  
+  if (!isAuthenticated) return <Navigate to={ROUTES.LOGIN} replace />;
+  
+  const role = user?.role?.trim().toUpperCase();
+  if (role === 'PHARMACIST') return <Navigate to={ROUTES.PHARMACIST.DASHBOARD} replace />;
+  if (role === 'SUPPLIER') return <Navigate to={ROUTES.SUPPLIER.DASHBOARD} replace />;
+  if (role === 'ADMIN') return <Navigate to={ROUTES.ADMIN.DASHBOARD} replace />;
+  
+  return <Navigate to={ROUTES.LOGIN} replace />;
+};
 
 export default function AppRoutes() {
   return (
-    <Suspense fallback={<PageLoader />}>
+    <Suspense 
+      fallback={
+        <div className="h-screen w-screen flex items-center justify-center bg-[#f8fafc]">
+          <div className="animate-spin rounded-full h-10 w-10 border-4 border-[#3B81B7] border-t-transparent"></div>
+        </div>
+      }
+    >
       <Routes>
-        
-        {/* توجيه المسار الرئيسي الافتراضي (/) إلى لوحة التحكم فوراً لتجنب الـ Not Found عند التشغيل */}
-        <Route path="/" element={<Navigate to="/pharmacist/dashboard" replace />} />
+        {/* التوجيه التلقائي الديناميكي للمسار الرئيسي بناءً على الـ Role لمنع الـ Access Denied */}
+        <Route path="/" element={<RootRedirect />} />
 
         {/* 1. Public Routes */}
         <Route path={ROUTES.HOME} element={<LandingPage />} />
         <Route path={ROUTES.LOGIN} element={<Login />} />
         <Route path={ROUTES.REGISTER} element={<Register />} />
 
-        {/* 2. Protected Portal Gateway */}
+        {/* 2. Protected Gateway */}
         <Route element={<ProtectedRoute />}>
           
-          {/* 🏪 Supplier Role Routing Group */}
+          {/* 🏪 مجموعة مسارات المورد (Supplier) */}
           <Route element={<RoleGuard allowedRoles={['SUPPLIER', 'supplier']} />}>
             <Route element={<AppLayout />}>
               <Route path={ROUTES.SUPPLIER.DASHBOARD} element={<SupplierDashboard />} />
-              <Route path={ROUTES.SUPPLIER.INCOMING_ORDERS} element={<IncomingOrders />} />
               <Route path="/supplier/pharmacies" element={<Pharmacies />} />
               <Route path="/supplier/drugs" element={<DrugsCatalog />} />
               <Route path="/supplier/drugs/add" element={<AddProduct />} />
@@ -72,14 +84,26 @@ export default function AppRoutes() {
             </Route>
           </Route>
 
-          {/* ⚡ Pharmacist Role Routing Group (تم تفعيلها وإصلاح مساراتها هنا) */}
+          {/* ⚡ مجموعة مسارات الصيدلي (Pharmacist) */}
           <Route element={<RoleGuard allowedRoles={['PHARMACIST', 'pharmacist']} />}>
             <Route element={<AppLayout />}>
               <Route path={ROUTES.PHARMACIST.DASHBOARD} element={<PharmacistDashboard />} />
-              <Route path={ROUTES.PHARMACIST.SCAN_PRESCRIPTION} element={<PharmacistPlaceholder title="Scan Prescription" />} />
-              <Route path={ROUTES.PHARMACIST.DRUG_SEARCH} element={<PharmacistPlaceholder title="Drug Search & Inventory" />} />
-              <Route path={ROUTES.PHARMACIST.DRUG_ALTERNATIVES} element={<PharmacistPlaceholder title="Drug Alternatives" />} />
-              <Route path={ROUTES.PHARMACIST.PATIENT_PROFILE} element={<PharmacistPlaceholder title="Patient Profile" />} />
+              <Route path={ROUTES.PHARMACIST.SCAN_PRESCRIPTION} element={<PlaceholderPage title="Scan Prescription" />} />
+              <Route path={ROUTES.PHARMACIST.DRUG_SEARCH} element={<PlaceholderPage title="Drug Search & Inventory" />} />
+              <Route path={ROUTES.PHARMACIST.DRUG_ALTERNATIVES} element={<PlaceholderPage title="Drug Alternatives" />} />
+              <Route path={ROUTES.PHARMACIST.PATIENT_PROFILE} element={<PlaceholderPage title="Patient Profile" />} />
+            </Route>
+          </Route>
+
+          {/* 👑 مجموعة مسارات الأدمن (Admin) بنفس الـ Layout والـ Styles بالضبط */}
+          <Route element={<RoleGuard allowedRoles={['ADMIN', 'admin']} />}>
+            <Route element={<AppLayout />}>
+              <Route path={ROUTES.ADMIN.DASHBOARD} element={<PlaceholderPage title="Admin Dashboard Overview" />} />
+              <Route path={ROUTES.ADMIN.USER_MANAGEMENT} element={<PlaceholderPage title="User Management (التحكم بالمستخدمين)" />} />
+              <Route path={ROUTES.ADMIN.DRUG_MANAGEMENT} element={<PlaceholderPage title="Global Drug Management" />} />
+              <Route path={ROUTES.ADMIN.SUPPLIER_MANAGEMENT} element={<PlaceholderPage title="Suppliers Verification (الموردين)" />} />
+              <Route path={ROUTES.ADMIN.PURCHASE_ORDERS} element={<PlaceholderPage title="Global Purchase Orders Trace" />} />
+              <Route path={ROUTES.ADMIN.REPORTS} element={<PlaceholderPage title="System Logs & Analytics Reports" />} />
             </Route>
           </Route>
 

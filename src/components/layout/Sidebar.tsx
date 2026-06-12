@@ -17,10 +17,10 @@ interface SidebarProps {
 export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const { user } = useAuth();
   
-  // تحويل الـ Role لحروف كبيرة لتفادي أي أخطاء في المقارنة
-  const currentRole = user?.role?.trim().toUpperCase() || 'SUPPLIER';
+  // جلب الـ Role الحالية وتوحيدها لمنع أي أخطاء في الـ Matching
+  const currentRole = user?.role?.trim().toUpperCase() || 'PHARMACIST';
 
-  // 1. قائمة المورد الأصلي (Supplier Menu) - كلام supplier كما هو بدون أي تعديل في الستايل
+  // 1. قائمة المورد (Supplier Menu) بالترتيب الفعلي من فيجما
   const supplierItems = [
     { path: ROUTES.SUPPLIER.DASHBOARD, label: 'Dashboard', icon: LayoutDashboard },
     { path: ROUTES.SUPPLIER.INCOMING_ORDERS, label: 'Orders', icon: ShoppingBag },
@@ -30,7 +30,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     { path: '/supplier/settings', label: 'Settings', icon: Settings },
   ];
 
-  // 2. قائمة الصيدلي المضافة والجديدة (Pharmacist Menu) - بنفس الستايل والأبعاد المعتمدة
+  // 2. قائمة الصيدلي (Pharmacist Menu) بنفس الستايل والهيكل الاحترافي
   const pharmacistItems = [
     { path: ROUTES.PHARMACIST.DASHBOARD, label: 'Dashboard', icon: LayoutDashboard },
     { path: ROUTES.PHARMACIST.SCAN_PRESCRIPTION, label: 'Scan Prescription', icon: ScanQrCode },
@@ -40,8 +40,27 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     { path: '/supplier/settings', label: 'Settings', icon: Settings },
   ];
 
-  // اختيار القائمة المناسبة بناءً على الرول الحالية للمستخدم
-  const menuItems = currentRole === 'PHARMACIST' ? pharmacistItems : supplierItems;
+  // 3. قائمة الأدمن (Admin Menu) المتكاملة للنظام
+  const adminItems = [
+    { path: ROUTES.ADMIN.DASHBOARD, label: 'Admin Dashboard', icon: LayoutDashboard },
+    { path: ROUTES.ADMIN.USER_MANAGEMENT, label: 'User Management', icon: Users },
+    { path: ROUTES.ADMIN.DRUG_MANAGEMENT, label: 'Drug Management', icon: Layers },
+    { path: ROUTES.ADMIN.SUPPLIER_MANAGEMENT, label: 'Suppliers', icon: UserCheck },
+    { path: ROUTES.ADMIN.PURCHASE_ORDERS, label: 'Purchase Orders', icon: ShoppingBag },
+    { path: ROUTES.ADMIN.REPORTS, label: 'Reports', icon: BarChart3 },
+  ];
+
+  // اختيار القائمة المناسبة ديناميكياً بناءً على الرول الحالية للمستخدم
+  const getMenuItems = () => {
+    switch (currentRole) {
+      case 'PHARMACIST': return pharmacistItems;
+      case 'SUPPLIER': return supplierItems;
+      case 'ADMIN': return adminItems;
+      default: return pharmacistItems;
+    }
+  };
+
+  const menuItems = getMenuItems();
 
   return (
     <>
@@ -54,18 +73,13 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         />
       )}
 
-      {/* الـ Sidebar الرئيسي المطور بناءً على مقاسات وأبعاد فيجما */}
+      {/* الـ Sidebar الرئيسي المطور بناءً على مقاسات وأبعاد فيجما بالملي (top-15 & lg:w-60) */}
       <aside 
         className={`bg-[#1B2A49] text-slate-300 flex flex-col fixed top-15 bottom-0 left-0 z-40 
           transition-all duration-300 ease-in-out select-none border-r border-slate-800/40
           ${isOpen ? 'translate-x-0 w-64' : '-translate-x-full md:translate-x-0'} 
-<<<<<<< HEAD
-          md:w-20 lg:w-64`}
-        aria-label="Main Sidebar Navigation"
-=======
           md:w-20 lg:w-60`}
-        aria-label="Supplier Sidebar Navigation"
->>>>>>> 74d16c641bfcec9ad4123934492975463754f00e
+        aria-label="Main Sidebar Navigation"
       >
         {/* زر إغلاق السايدبار في الموبايل */}
         <div className="flex justify-end p-2 md:hidden">
@@ -78,7 +92,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           </button>
         </div>
 
-        {/* قائمة اللينكات التفاعلية بالأبعاد الدقيقة */}
+        {/* قائمة اللينكات التفاعلية بالأبعاد الدقيقة المتجاوبة */}
         <nav className="space-y-2 flex-1 px-3 mt-4">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -96,12 +110,12 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                   }`
                 }
               >
-                {/* الأيقونة */}
+                {/* الأيقونة: متناسقة تماماً وجنب الكلام في الموبايل واللابتوب، وتتوسط المربع في التابلت */}
                 <div className="flex items-center justify-center min-w-[20px] md:mx-auto lg:mx-0">
                   <Icon size={18} className="transition-colors group-hover:text-white" />
                 </div>
                 
-                {/* النصوص المدمجة والمتجاوبة */}
+                {/* النصوص المدمجة والمتجاوبة: تختفي فقط في وضع التابلت md وتظهر في الباقي بفضل الـ gap-3 */}
                 <span className="hidden lg:block md:hidden tracking-wide whitespace-nowrap">{item.label}</span>
                 <span className="block md:hidden tracking-wide whitespace-nowrap">{item.label}</span>
               </NavLink>

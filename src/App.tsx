@@ -2,39 +2,35 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from './routes/index'; 
-import { authStore } from './store/authStore'; // استيراد الـ store الخاص بالـ Auth
+import { authStore } from './store/authStore'; 
 
 function App() {
   useEffect(() => {
-    // 💡 للتبديل والدخول بين الصيدلي والمورد أثناء الاختبار:
+    // 💡 جربيها دلوقتي: فَعّلي الدور اللي حابه تدخلي بيه واقفلي الباقي بالـ Comment
     
-    // خيار أ: للدخول كـ صيدلي (Pharmacist)
+    // خيار 1: للدخول كـ صيدلي (Pharmacist)
     authStore.getState().login(
-      { 
-        id: 'user_01', 
-        name: 'Medix User', 
-        email: 'user@medix.com', 
-        role: 'PHARMACIST' 
-      },
+      { id: 'user_01', name: 'Medix Pharmacist', email: 'pharmacist@medix.com', role: 'PHARMACIST' },
       'mock-jwt-token-xyz-123'
     );
 
-    /* // خيار ب: للدخول كـ مورد (Supplier) - احذفي علامات التعليق لتفعيله
+    /* // خيار 2: للدخول كـ مورد (Supplier)
     authStore.getState().login(
-      { 
-        id: 'sup_01', 
-        name: 'Eva Pharma', 
-        email: 'supplier@evapharma.com', 
-        role: 'SUPPLIER' 
-      },
+      { id: 'sup_01', name: 'Eva Pharma', email: 'supplier@evapharma.com', role: 'SUPPLIER' },
       'mock-jwt-token-xyz-123'
     );
     */
-  }, []);
+
+    /* // خيار 3: للدخول كـ أدمن النظام (Admin)  */
+  //   authStore.getState().login(
+  //     { id: 'adm_01', name: 'Medix Admin', email: 'admin@medix.com', role: 'ADMIN' },
+  //     'mock-jwt-token-xyz-123'
+  //   );
+  
+  // }, []);
 
   return (
     <BrowserRouter>
-      {/* الـ AppRoutes يحمل داخله كل الـ Lazy Pages والـ Role Guards لحماية النظام */}
       <AppRoutes />
     </BrowserRouter>
   );

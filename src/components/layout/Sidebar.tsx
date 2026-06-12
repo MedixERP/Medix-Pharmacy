@@ -33,10 +33,10 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
 
       {/* الـ Sidebar الرئيسي المطور بناءً على مقاسات وأبعاد فيجما */}
       <aside 
-        className={`bg-[#1B2A49] text-slate-300 flex flex-col fixed top-20 bottom-0 left-0 z-40 
+        className={`bg-[#1B2A49] text-slate-300 flex flex-col fixed top-15 bottom-0 left-0 z-40 
           transition-all duration-300 ease-in-out select-none border-r border-slate-800/40
           ${isOpen ? 'translate-x-0 w-64' : '-translate-x-full md:translate-x-0'} 
-          md:w-20 lg:w-64`}
+          md:w-20 lg:w-60`}
         aria-label="Supplier Sidebar Navigation"
       >
         {/* زر إغلاق السايدبار في الموبايل */}

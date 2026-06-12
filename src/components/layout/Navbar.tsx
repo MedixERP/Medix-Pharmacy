@@ -39,7 +39,7 @@ export default function Navbar({ sidebarOpen, setSidebarOpen }: NavbarProps) {
 
   return (
     <header 
-      className="h-20 bg-white border-b border-slate-100 px-4 md:px-8 flex items-center justify-between sticky top-0 z-50 w-full select-none
+      className="h-15 bg-white border-b border-slate-100 px-4 md:px-8 flex items-center justify-between sticky top-0 z-50 w-full select-none
         shadow-[0_10px_30px_rgba(27,42,73,0.05)] relative"
       role="banner"
     >

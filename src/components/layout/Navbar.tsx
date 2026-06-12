@@ -20,9 +20,18 @@ export default function Navbar({ sidebarOpen, setSidebarOpen }: NavbarProps) {
   const setSearchQuery = useSearchStore((state) => state.setSearchQuery);
 
   return (
+<<<<<<< HEAD
     <header className="bg-white h-20 fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 border-b border-slate-100 select-none">
       
       {/* الجزء الأيسر: زر المنيو اللوجو */}
+=======
+    <header 
+      className="h-15 bg-white border-b border-slate-100 px-4 md:px-8 flex items-center justify-between sticky top-0 z-50 w-full select-none
+        shadow-[0_10px_30px_rgba(27,42,73,0.05)] relative"
+      role="banner"
+    >
+      {/* ================= اليسار: زر المنيو + اللوجو الفعلي ================= */}
+>>>>>>> 74d16c641bfcec9ad4123934492975463754f00e
       <div className="flex items-center gap-4">
         <button 
           onClick={() => setSidebarOpen(!sidebarOpen)}

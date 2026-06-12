@@ -2,7 +2,12 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { ROUTES } from '../../routes/routes';
-import { LayoutDashboard, ShoppingBag, Users, Layers, BarChart3, Settings, X } from 'lucide-react';
+import useAuth from '../../hooks/useAuth';
+import { 
+  LayoutDashboard, ShoppingBag, Users, Layers, 
+  BarChart3, Settings, X, ScanQrCode, Search, 
+  ArrowLeftRight, UserCheck 
+} from 'lucide-react';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -10,8 +15,13 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
-  // قائمة اللينكات المحددة بالترتيب من فيجما
-  const menuItems = [
+  const { user } = useAuth();
+  
+  // تحويل الـ Role لحروف كبيرة لتفادي أي أخطاء في المقارنة
+  const currentRole = user?.role?.trim().toUpperCase() || 'SUPPLIER';
+
+  // 1. قائمة المورد الأصلي (Supplier Menu) - كلام supplier كما هو بدون أي تعديل في الستايل
+  const supplierItems = [
     { path: ROUTES.SUPPLIER.DASHBOARD, label: 'Dashboard', icon: LayoutDashboard },
     { path: ROUTES.SUPPLIER.INCOMING_ORDERS, label: 'Orders', icon: ShoppingBag },
     { path: '/supplier/pharmacies', label: 'Pharmacies', icon: Users },
@@ -19,6 +29,19 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     { path: '/supplier/analytics', label: 'Analytics', icon: BarChart3 },
     { path: '/supplier/settings', label: 'Settings', icon: Settings },
   ];
+
+  // 2. قائمة الصيدلي المضافة والجديدة (Pharmacist Menu) - بنفس الستايل والأبعاد المعتمدة
+  const pharmacistItems = [
+    { path: ROUTES.PHARMACIST.DASHBOARD, label: 'Dashboard', icon: LayoutDashboard },
+    { path: ROUTES.PHARMACIST.SCAN_PRESCRIPTION, label: 'Scan Prescription', icon: ScanQrCode },
+    { path: ROUTES.PHARMACIST.DRUG_SEARCH, label: 'Drug Search', icon: Search },
+    { path: ROUTES.PHARMACIST.DRUG_ALTERNATIVES, label: 'Alternatives', icon: ArrowLeftRight },
+    { path: ROUTES.PHARMACIST.PATIENT_PROFILE, label: 'Patient Profile', icon: UserCheck },
+    { path: '/supplier/settings', label: 'Settings', icon: Settings },
+  ];
+
+  // اختيار القائمة المناسبة بناءً على الرول الحالية للمستخدم
+  const menuItems = currentRole === 'PHARMACIST' ? pharmacistItems : supplierItems;
 
   return (
     <>
@@ -37,7 +60,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           transition-all duration-300 ease-in-out select-none border-r border-slate-800/40
           ${isOpen ? 'translate-x-0 w-64' : '-translate-x-full md:translate-x-0'} 
           md:w-20 lg:w-64`}
-        aria-label="Supplier Sidebar Navigation"
+        aria-label="Main Sidebar Navigation"
       >
         {/* زر إغلاق السايدبار في الموبايل */}
         <div className="flex justify-end p-2 md:hidden">
@@ -68,12 +91,12 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                   }`
                 }
               >
-                {/* الأيقونة: متناسقة تماماً وجنب الكلام في الموبايل واللابتوب، وتتوسط المربع في التابلت (Icons only mode) */}
+                {/* الأيقونة */}
                 <div className="flex items-center justify-center min-w-[20px] md:mx-auto lg:mx-0">
                   <Icon size={18} className="transition-colors group-hover:text-white" />
                 </div>
                 
-                {/* النصوص: تظهر بجانب الأيقونة مباشرة بفضل الـ gap-3 وتختفي فقط في وضع التابلت md */}
+                {/* النصوص المدمجة والمتجاوبة */}
                 <span className="hidden lg:block md:hidden tracking-wide whitespace-nowrap">{item.label}</span>
                 <span className="block md:hidden tracking-wide whitespace-nowrap">{item.label}</span>
               </NavLink>

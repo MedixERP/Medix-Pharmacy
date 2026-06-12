@@ -15,11 +15,16 @@ export default function RoleGuard({ allowedRoles }: RoleGuardProps) {
     return <Navigate to="/login" replace />;
   }
 
-  // 2. لو الـ Role بتاعته مش مسموح لها تشوف الصفحة دي، واديه لصفحة الـ Unauthorized أو الـ NotFound
-  if (user && !allowedRoles.includes(user.role)) {
+  // 2. تحويل الأدوار المسموحة والحالية لحروف كبيرة مع مسح أي مسافات زائدة لمنع خطأ الـ Not Found
+  const normalizedAllowedRoles = allowedRoles.map(role => role.trim().toUpperCase());
+  const userRole = user?.role?.trim().toUpperCase() || '';
+
+  // 3. لو الـ Role بتاعته مش مسموح لها تشوف الصفحة دي، واديه لصفحة الـ NotFound
+  if (user && !normalizedAllowedRoles.includes(userRole)) {
+    console.warn(`[RoleGuard] Access Denied. User role: "${userRole}" is not in:`, normalizedAllowedRoles);
     return <Navigate to="/not-found" replace />;
   }
 
-  // 3. لو كله تمام والـ Role صح، خليه يدخل عادي ويشوف الصفحة الداخيلة (Outlet)
+  // 4. لو كله تمام والـ Role صح، خليه يدخل عادي ويشوف الصفحة الداخيلة (Outlet)
   return <Outlet />;
 }

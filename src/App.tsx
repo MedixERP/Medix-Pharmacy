@@ -6,16 +6,30 @@ import { authStore } from './store/authStore'; // استيراد الـ store ا
 
 function App() {
   useEffect(() => {
-    // 🚀 تسجيل دخول وهمي تلقائي كـ SUPPLIER (كابيتال) لفتح النظام وتجربة الصفحات فوراً
+    // 💡 للتبديل والدخول بين الصيدلي والمورد أثناء الاختبار:
+    
+    // خيار أ: للدخول كـ صيدلي (Pharmacist)
+    authStore.getState().login(
+      { 
+        id: 'user_01', 
+        name: 'Medix User', 
+        email: 'user@medix.com', 
+        role: 'PHARMACIST' 
+      },
+      'mock-jwt-token-xyz-123'
+    );
+
+    /* // خيار ب: للدخول كـ مورد (Supplier) - احذفي علامات التعليق لتفعيله
     authStore.getState().login(
       { 
         id: 'sup_01', 
         name: 'Eva Pharma', 
         email: 'supplier@evapharma.com', 
-        role: 'SUPPLIER' // متوافق تماماً مع الـ Interface والـ RoleGuard
+        role: 'SUPPLIER' 
       },
       'mock-jwt-token-xyz-123'
     );
+    */
   }, []);
 
   return (

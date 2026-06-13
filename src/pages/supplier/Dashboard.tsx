@@ -1,6 +1,6 @@
 // src/pages/supplier/Dashboard.tsx
 import React, { useState } from 'react';
-import { Eye, Package, ShoppingBag, Clock, X, Check, FileText } from 'lucide-react';
+import { Eye, Package, ShoppingBag, Clock, X, Check, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSearchStore } from '../../store/searchStore';
 import SEOHead from '../../components/shared/SEOHead';
 
@@ -18,6 +18,10 @@ export default function SupplierDashboard() {
   const searchQuery = useSearchStore((state) => state.searchQuery);
   const [selectedOrder, setSelectedOrder] = useState<typeof initialOrders[0] | null>(null);
 
+  // الـ States الخاصة بالـ Pagination الجاهزة للربط
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
+
   const handleStatusChange = (id: string, newStatus: string) => {
     setOrders(prev => prev.map(o => o.id === id ? { ...o, status: newStatus } : o));
     if (selectedOrder?.id === id) {
@@ -30,8 +34,14 @@ export default function SupplierDashboard() {
     o.pharmacy.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // حسابات الـ Pagination الديناميكية
+  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentOrders = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
+
   return (
-    <div className=" animate-in fade-in duration-300 text-left relative">
+    <div className="animate-in fade-in duration-300 text-left relative space-y-6">
       {/* دمج الـ SEO المتكامل للملف */}
       <SEOHead 
         title="Dashboard" 
@@ -56,7 +66,6 @@ export default function SupplierDashboard() {
 
       {/* 2. كروت الإحصائيات الفاخرة المحدثة بـ Typography فيجما الثابت */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 select-none">
-        
         {/* كارد 1 */}
         <div className="glass-light p-6 rounded-2xl flex flex-col justify-between min-h-[145px]">
           <div className="p-2.5 bg-blue-50/60 text-blue-600 rounded-xl w-fit shadow-inner border border-blue-100/20"><Package size={18} /></div>
@@ -133,7 +142,7 @@ export default function SupplierDashboard() {
         </div>
       </div>
 
-      {/* 3. الجدول والـ Actions (تم تحديث عنوان الجدول بـ الستايل المطلوب) */}
+      {/* 3. الجدول والـ Actions والـ Cards للموبايل */}
       <div className="glass-light rounded-2xl overflow-hidden border border-white/60 shadow-sm">
         <div className="px-6 py-5 border-b border-slate-100/80 flex items-center justify-between bg-white/40 select-none flex-wrap gap-2">
           <div className="flex items-center gap-3">
@@ -152,21 +161,65 @@ export default function SupplierDashboard() {
           </span>
         </div>
 
-        {/* الـ Table الـ Responsive بالكامل */}
-        <div className="overflow-x-auto">
+        {/* 📱 أ: تصميم الـ Cards للشاشات الصغيرة والمتوسطة (مخفي في الـ Desktop) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 md:hidden select-none">
+          {currentOrders.map((order) => (
+            <div 
+              key={order.id}
+              onClick={() => setSelectedOrder(order)}
+              className="p-5 rounded-2xl bg-white border border-slate-100 shadow-2xs flex flex-col justify-between space-y-4 hover:border-blue-300 transition-all cursor-pointer"
+            >
+              <div className="flex items-center justify-between">
+                {/* الأفاتار بالـ Linear Gradient المطلوب */}
+                <div 
+                  className="w-10 h-10 text-white font-bold text-xs rounded-full flex items-center justify-center flex-shrink-0 shadow-sm"
+                  style={{ background: 'linear-gradient(135deg, #3B81B7 0%, #5B9FD7 100%)' }}
+                >
+                  {order.logo}
+                </div>
+                <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg ${
+                  order.status === 'New' ? 'bg-blue-50 text-blue-500' :
+                  order.status === 'In Progress' ? 'bg-amber-50 text-amber-500' : 'bg-purple-50 text-purple-500'
+                }`}>{order.status}</span>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-[#1b2a49] text-sm truncate">{order.pharmacy}</h4>
+                <p className="text-[11px] text-blue-600 font-bold mt-1 tracking-tight">{order.id}</p>
+              </div>
+
+              <div className="flex items-center justify-between border-t border-slate-50 pt-3 text-xs">
+                <div>
+                  <p className="text-[#7F8C8D]" style={{ fontFamily: 'SF Pro Rounded', fontWeight: 400, fontSize: '13px' }}>{order.date}</p>
+                  <p className="text-slate-400 font-medium mt-0.5">📦 {order.items} items</p>
+                </div>
+                {/* البتون بالـ Linear Gradient والمقاسات المطلوبة */}
+                <button 
+                  className="p-2.5 rounded-xl text-white font-bold text-xs transition-all transform active:scale-95 shadow-md flex items-center justify-center"
+                  style={{ background: 'linear-gradient(135deg, #3B81B7 0%, #5B9FD7 100%)' }}
+                >
+                  <Eye size={14} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* 💻 ب: تصميم الجدول الاحترافي لفيجما (مخفي في الموبايل والتابلت) */}
+        <div className="overflow-x-auto hidden md:block">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50/60 border-b border-slate-100/80 text-[10px] font-bold uppercase tracking-wider text-slate-400 select-none">
-                <th className="py-4 px-6">Order ID</th>
-                <th className="py-4 px-6">Pharmacy Name</th>
-                <th className="py-4 px-6">Date</th>
-                <th className="py-4 px-6">Total Items</th>
-                <th className="py-4 px-6">Status</th>
-                <th className="py-4 px-6 text-center">Actions</th>
+              <tr className="bg-slate-50/60 border-b border-slate-100/80 text-slate-400 select-none">
+                <th className="py-4 px-6" style={{ fontFamily: 'SF Pro Rounded', fontWeight: 700, fontSize: '13px', lineHeight: '19.5px', letterSpacing: '0.32px', textTransform: 'uppercase' }}>Order ID</th>
+                <th className="py-4 px-6" style={{ fontFamily: 'SF Pro Rounded', fontWeight: 700, fontSize: '13px', lineHeight: '19.5px', letterSpacing: '0.32px', textTransform: 'uppercase' }}>Pharmacy Name</th>
+                <th className="py-4 px-6" style={{ fontFamily: 'SF Pro Rounded', fontWeight: 700, fontSize: '13px', lineHeight: '19.5px', letterSpacing: '0.32px', textTransform: 'uppercase' }}>Date</th>
+                <th className="py-4 px-6" style={{ fontFamily: 'SF Pro Rounded', fontWeight: 700, fontSize: '13px', lineHeight: '19.5px', letterSpacing: '0.32px', textTransform: 'uppercase' }}>Total Items</th>
+                <th className="py-4 px-6" style={{ fontFamily: 'SF Pro Rounded', fontWeight: 700, fontSize: '13px', lineHeight: '19.5px', letterSpacing: '0.32px', textTransform: 'uppercase' }}>Status</th>
+                <th className="py-4 px-6 text-center" style={{ fontFamily: 'SF Pro Rounded', fontWeight: 700, fontSize: '13px', lineHeight: '19.5px', letterSpacing: '0.32px', textTransform: 'uppercase' }}>Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100/60 text-xs font-medium">
-              {filteredOrders.map((order) => (
+              {currentOrders.map((order) => (
                 <tr 
                   key={order.id} 
                   onClick={() => setSelectedOrder(order)}
@@ -175,11 +228,20 @@ export default function SupplierDashboard() {
                   <td className="py-4 px-6 font-bold text-blue-600 tracking-tight">{order.id}</td>
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
-                      <div className={`w-7 h-7 ${order.logoBg} text-white font-bold text-[10px] rounded-full flex items-center justify-center flex-shrink-0`}>{order.logo}</div>
+                      {/* الأفاتار بالـ Linear Gradient المطلوب في الجدول */}
+                      <div 
+                        className="w-8 h-8 text-white font-bold text-[11px] rounded-full flex items-center justify-center flex-shrink-0 shadow-xs"
+                        style={{ background: 'linear-gradient(135deg, #3B81B7 0%, #5B9FD7 100%)' }}
+                      >
+                        {order.logo}
+                      </div>
                       <span className="font-bold text-[#1b2a49] whitespace-nowrap">{order.pharmacy}</span>
                     </div>
                   </td>
-                  <td className="py-4 px-6 text-slate-400 font-semibold whitespace-nowrap">{order.date}</td>
+                  {/* تنسيق وخط التاريخ المطلوب بالـ ملّي واللون الخاص به */}
+                  <td className="py-4 px-6 text-[#7F8C8D]" style={{ fontFamily: 'SF Pro Rounded', fontWeight: 400, fontSize: '14px', lineHeight: '21px', letterSpacing: '0px' }}>
+                    {order.date}
+                  </td>
                   <td className="py-4 px-6 text-slate-500 font-semibold whitespace-nowrap">📦 {order.items} items</td>
                   <td className="py-4 px-6">
                     <span className={`inline-block text-[10px] font-bold px-2.5 py-1 rounded-lg ${
@@ -189,9 +251,11 @@ export default function SupplierDashboard() {
                     }`}>{order.status}</span>
                   </td>
                   <td className="py-4 px-6 text-center" onClick={(e) => e.stopPropagation()}>
+                    {/* البتون بالـ Linear Gradient المطلوب */}
                     <button 
                       onClick={() => setSelectedOrder(order)}
-                      className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] px-4 py-2 rounded-xl transition-all shadow-sm hover:shadow-md active:scale-95 cursor-pointer whitespace-nowrap"
+                      className="inline-flex items-center gap-1.5 text-white font-bold text-[11px] px-4 py-2 rounded-xl transition-all shadow-sm hover:shadow-md active:scale-95 cursor-pointer whitespace-nowrap"
+                      style={{ background: 'linear-gradient(135deg, #3B81B7 0%, #5B9FD7 100%)' }}
                     >
                       <Eye size={13} />
                       View Details
@@ -203,16 +267,31 @@ export default function SupplierDashboard() {
           </table>
         </div>
 
-        {/* الـ Pagination */}
+        {/* ⚙️ نظام الـ Pagination التفاعلي الشغال بالكامل للباك إند */}
         <div className="px-6 py-4 bg-slate-50/40 border-t border-slate-100/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-400 font-semibold select-none">
-          <span>Showing 1 to {filteredOrders.length} of {orders.length} orders</span>
+          <span>Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredOrders.length)} of {filteredOrders.length} orders</span>
           <div className="flex items-center gap-1">
-            <button className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-300 transition-all text-slate-400 cursor-not-allowed" disabled>
+            <button 
+              onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            >
               Previous
             </button>
-            <button className="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold shadow-sm cursor-pointer">1</button>
-            <button className="w-8 h-8 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 transition-all cursor-pointer">2</button>
-            <button className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 transition-all cursor-pointer">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button 
+                key={i + 1}
+                onClick={() => setCurrentPage(i + 1)}
+                className={`w-8 h-8 rounded-lg font-bold shadow-sm transition-all cursor-pointer ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'border border-slate-200 bg-white hover:bg-slate-50 text-slate-600'}`}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button 
+              onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+              disabled={currentPage === totalPages || totalPages === 0}
+              className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            >
               Next
             </button>
           </div>
@@ -228,13 +307,18 @@ export default function SupplierDashboard() {
               <X size={18} />
             </button>
 
-            <div className="flex flex-col items-center text-center mt-2 mb-6">
-              <div className={`w-14 h-14 ${selectedOrder.logoBg} text-white flex items-center justify-center text-lg font-bold rounded-full shadow-md mb-2`}>{selectedOrder.logo}</div>
+            <div className="flex flex-col items-center text-center mt-2 mb-6 select-none">
+              <div 
+                className="w-14 h-14 text-white flex items-center justify-center text-lg font-bold rounded-full shadow-md mb-2"
+                style={{ background: 'linear-gradient(135deg, #3B81B7 0%, #5B9FD7 100%)' }}
+              >
+                {selectedOrder.logo}
+              </div>
               <h3 className="text-lg font-bold text-[#1b2a49]">{selectedOrder.pharmacy}</h3>
               <p className="text-xs text-blue-600 font-bold mt-0.5">{selectedOrder.id}</p>
             </div>
 
-            <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-4 space-y-2 mb-4 text-xs font-medium text-slate-600">
+            <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-4 space-y-2 mb-4 text-xs font-medium text-slate-600 select-none">
               <p className="flex justify-between"><span>Order Date:</span> <span className="font-bold text-[#1b2a49]">{selectedOrder.date}</span></p>
               <p className="flex justify-between"><span>Total Items:</span> <span className="font-bold text-[#1b2a49]">{selectedOrder.items} items</span></p>
               <p className="flex justify-between"><span>Total Amount:</span> <span className="font-bold text-emerald-600 text-sm">{selectedOrder.totalAmount}</span></p>
@@ -244,7 +328,7 @@ export default function SupplierDashboard() {
             </div>
 
             <div className="space-y-2 mb-6">
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wide px-1">Items List</p>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wide px-1 select-none">Items List</p>
               <div className="border border-slate-100 rounded-xl divide-y divide-slate-100 overflow-hidden text-xs">
                 {selectedOrder.itemsList.map((item, index) => (
                   <div key={index} className="p-3 bg-white flex justify-between font-semibold">

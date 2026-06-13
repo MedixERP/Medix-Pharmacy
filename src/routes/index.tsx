@@ -24,7 +24,9 @@ const AddProduct = lazy(() => import('../pages/supplier/AddProduct'));
 const EditProduct = lazy(() => import('../pages/supplier/EditProduct'));
 const AnalyticsReports = lazy(() => import('../pages/supplier/Reports'));
 const Settings = lazy(() => import('../pages/supplier/Settings'));
-
+// ضيفي عمل Imports للصفحتين الجداد فوق مع باقي صفحات الـ Supplier
+const CompanyProfile = lazy(() => import('../pages/supplier/CompanyProfile'));
+const NotificationsPage = lazy(() => import('../pages/supplier/Notifications'));
 // Pharmacist Pages
 const PharmacistDashboard = lazy(() => import('../pages/pharmacist/Dashboard'));
 
@@ -81,6 +83,9 @@ export default function AppRoutes() {
               <Route path="/supplier/drugs/edit/:id" element={<EditProduct />} />
               <Route path="/supplier/analytics" element={<AnalyticsReports />} />
               <Route path="/supplier/settings" element={<Settings />} />
+              <Route path={ROUTES.SUPPLIER.INCOMING_ORDERS} element={<IncomingOrders />} />
+              <Route path="/supplier/profile" element={<CompanyProfile />} />
+    <Route path="/supplier/notifications" element={<NotificationsPage />} />
             </Route>
           </Route>
 

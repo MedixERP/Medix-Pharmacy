@@ -32,7 +32,7 @@ export const ROUTES = {
   SUPPLIER: {
     DASHBOARD: '/supplier/dashboard',
     INCOMING_ORDERS: '/supplier/orders',
-    ORDER_HISTORY: '/supplier/history',
+  
   },
 
   // Patient Role Controls

@@ -43,31 +43,38 @@ export default function Navbar({ sidebarOpen, setSidebarOpen }: NavbarProps) {
         shadow-[0_10px_30px_rgba(27,42,73,0.05)] relative"
       role="banner"
     >
-      {/* ================= اليسار: زر المنيو + اللوجو الفعلي ================= */}
-      <div className="flex items-center gap-4">
-        <button 
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2 text-slate-600 hover:text-[#1b2a49] rounded-xl hover:bg-slate-50 md:hidden cursor-pointer transition-colors"
-          aria-label="Toggle navigation menu"
-          aria-expanded={sidebarOpen}
-        >
-          <Menu size={22} />
-        </button>
+      
+        {/* ================= اليسار: زر المنيو + اللوجو الفعلي المطور ================= */}
+<div className="flex items-center gap-3">
+  <button 
+    onClick={() => setSidebarOpen(!sidebarOpen)}
+    className="p-2 text-slate-600 hover:text-[#1b2a49] rounded-xl hover:bg-slate-50 md:hidden cursor-pointer transition-colors"
+    aria-label="Toggle navigation menu"
+    aria-expanded={sidebarOpen}
+  >
+    <Menu size={22} />
+  </button>
 
-        <div className="flex items-center gap-3">
-          <img 
-            src="/authlogo.png" 
-            alt="PharmaDash Logo" 
-            className="w-9 h-9 object-contain select-none pointer-events-none"
-            onError={(e) => {
-              (e.target as HTMLElement).style.display = 'none';
-            }}
-          />
-          <span className="text-lg sm:text-xl font-bold text-[#1b2a49] tracking-tight hidden sm:block">
-            Medix<span className="text-blue-600">.</span>
+  <div className="flex items-center gap-3">
+    {/* الحاوية المدورة الشبيهة بالتصميم مع الـ Shadow الأزرق النيون الفاخر */}
+    <div className="w-11 h-11 rounded-full bg-white flex items-center justify-center border border-slate-100 overflow-hidden shadow-[0_0_20px_rgba(91,159,215,0.35)] flex-shrink-0 select-none pointer-events-none p-1">
+      <img 
+        src="/authlogo.png" 
+        alt="Medix Logo" 
+        className="w-full h-full object-contain"
+        onError={(e) => {
+          (e.target as HTMLElement).style.display = 'none';
+        }}
+      />
+    </div>
+    
+    {/* اسم المشروع الاحترافي */}
+      <span className="text-lg sm:text-xl font-bold text-[#1b2a49] tracking-tight hidden sm:block">
+            PharmaDash
           </span>
-        </div>
-      </div>
+  </div>
+</div>
+    
 
       {/* ================= المنتصف: شريط البحث الذكي (الشاشات الكبيرة) ================= */}
       <div className="relative flex-1 max-w-xs sm:max-w-sm md:max-w-md mx-4 hidden md:block">
@@ -173,25 +180,27 @@ export default function Navbar({ sidebarOpen, setSidebarOpen }: NavbarProps) {
           aria-label="View user profile settings"
         >
           {/* دائرة الأفتار */}
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center text-[#1b2a49] font-extrabold text-xs sm:text-sm shadow-xs select-none group-hover:border-blue-400 transition-colors flex-shrink-0">
-            {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
-          </div>
+      <div 
+  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-[#1B2A49] to-[#5B9FD7] border border-blue-200/30 flex items-center justify-center text-white font-black text-xs sm:text-sm shadow-sm select-none group-hover:border-blue-400/60 transition-all flex-shrink-0"
+>
+  {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+</div>
           
           {/* التكست يظهر في التابلت واللابتوب (md) ويختفي في الموبايل */}
-          <div className="text-left hidden md:block select-none">
-            <h4 
-              className="text-[14px] leading-[21px] font-bold text-[#1b2a49] uppercase tracking-wide group-hover:text-blue-600 transition-colors"
-              style={{ fontFamily: '"SF Pro Rounded", "Arimo", sans-serif' }}
-            >
-              {user?.name || 'Medix User'}
-            </h4>
-            <p 
-              className="text-[12px] leading-[18px] font-normal text-slate-400 uppercase tracking-wide mt-0.5"
-              style={{ fontFamily: '"SF Pro Rounded", "Arimo", sans-serif' }}
-            >
-              {user?.role ? `${user.role} ACCOUNT` : 'USER PORTAL'}
-            </p>
-          </div>
+        <div className="text-left hidden md:block select-none">
+  <h4 
+    className="text-[14px] leading-[21px] font-bold text-[#1b2a49] tracking-wide group-hover:text-blue-600 transition-colors capitalize"
+    style={{ fontFamily: '"SF Pro Rounded", "Arimo", sans-serif' }}
+  >
+    {user?.name || 'medix user'}
+  </h4>
+  <p 
+    className="text-[12px] leading-[18px] font-normal text-slate-400 tracking-wide mt-0.5 capitalize"
+    style={{ fontFamily: '"SF Pro Rounded", "Arimo", sans-serif' }}
+  >
+    {user?.role ? `${user.role.toLowerCase()} account` : 'user portal'}
+  </p>
+</div>
         </div>
 
       </div>

@@ -95,7 +95,14 @@ export default function AppRoutes() {
               <Route path={ROUTES.PHARMACIST.PATIENT_PROFILE} element={<PlaceholderPage title="Patient Profile" />} />
             </Route>
           </Route>
-
+<Route element={<RoleGuard allowedRoles={['PATIENT', 'patient']} />}>
+  <Route element={<AppLayout />}>
+    {/* ربط مسار بروفايل المريض بالمكون المؤقت ليظهر داخل الـ Layout والـ Sidebar فوراً */}
+    <Route path="/patient/profile" element={<PlaceholderPage title="Patient Profile Dashboard" />} />
+    <Route path="/patient/chronic-meds" element={<PlaceholderPage title="Chronic Medications Tracking" />} />
+    <Route path="/patient/history" element={<PlaceholderPage title="Prescription History Ledger" />} />
+  </Route>
+</Route>
           {/* 👑 مجموعة مسارات الأدمن (Admin) بنفس الـ Layout والـ Styles بالضبط */}
           <Route element={<RoleGuard allowedRoles={['ADMIN', 'admin']} />}>
             <Route element={<AppLayout />}>

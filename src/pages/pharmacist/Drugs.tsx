@@ -1,8 +1,9 @@
 // src/pages/pharmacist/Drugs.tsx
 import React, { useState } from 'react';
-import { Eye, Edit3, Plus, Layers, X } from 'lucide-react';
+import { Eye, Edit3, Plus, Layers } from 'lucide-react';
+import AddDrugModal from './AddDrugModal'; // تأكدي من صحة مسار المودال عندك بالظبط
 
-const MOCK_DRUGS = [
+const initialDrugs = [
   { id: 1, name: 'Panadol', category: 'Painkiller', stock: 150, threshold: 50, status: 'NORMAL' },
   { id: 2, name: 'Augmentin', category: 'Antibiotic', stock: 0, threshold: 75, status: 'OUT_OF_STOCK' },
   { id: 3, name: 'Voltaren', category: 'Pain Relief', stock: 8, threshold: 40, status: 'LOW' },
@@ -19,10 +20,17 @@ const getStatusStyles = (status: string) => {
 };
 
 export default function Drugs() {
+  // تحويل البيانات لـ State حية عشان تسمح بالإضافة الفورية
+  const [drugs, setDrugs] = useState(initialDrugs);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // دالة استقبال الداتا من المودال وإضافتها للجدول
+  const handleAddDrug = (newDrug: any) => {
+    setDrugs((prev) => [newDrug, ...prev]);
+  };
+
   return (
-    <div className="p-8 bg-slate-50 min-h-screen">
+    <div className="p-8 bg-slate-50 min-h-screen text-left">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>
@@ -31,7 +39,7 @@ export default function Drugs() {
         </div>
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-[#3B81B7] text-white px-6 py-2.5 rounded-2xl shadow-lg hover:bg-[#2e6d9e] transition-all"
+          className="flex items-center gap-2 bg-[#3B81B7] text-white px-6 py-2.5 rounded-2xl shadow-lg hover:bg-[#2e6d9e] transition-all cursor-pointer"
         >
           <Plus size={20} /> <span className="font-bold">Add Drug</span>
         </button>
@@ -51,7 +59,7 @@ export default function Drugs() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-50">
-            {MOCK_DRUGS.map((drug) => (
+            {drugs.map((drug) => (
               <tr key={drug.id} className="hover:bg-slate-50/50 transition-colors">
                 <td className="py-5 px-8 flex items-center gap-3">
                   <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-[#3B81B7]">
@@ -81,30 +89,12 @@ export default function Drugs() {
         </table>
       </div>
 
-      {/* Add Drug Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="w-[711px] bg-white rounded-2xl shadow-[0px_20px_40px_0px_rgba(59,129,183,0.30)] p-8 animate-in fade-in zoom-in duration-200">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-slate-700">Add New Drug</h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-red-500"><X size={24} /></button>
-            </div>
-            {/* هنا يمكنك إضافة حقول النموذج الخاصة بك */}
-            <div className="space-y-4">
-              <input className="w-full p-3 bg-gray-50 rounded-xl border border-gray-200" placeholder="Drug Name" />
-              <div className="grid grid-cols-2 gap-4">
-                <input className="p-3 bg-gray-50 rounded-xl border border-gray-200" placeholder="Category" />
-                <input className="p-3 bg-gray-50 rounded-xl border border-gray-200" placeholder="Supplier" />
-              </div>
-              {/* بقية الحقول */}
-              <div className="flex justify-end gap-3 mt-8">
-                <button onClick={() => setIsModalOpen(false)} className="px-6 py-2.5 font-bold text-gray-500">Cancel</button>
-                <button className="px-6 py-2.5 bg-[#3B81B7] text-white rounded-2xl font-bold">Add Drug</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* الـ Component الجديد المستدعى بشكل نظيف وبكامل حقوله */}
+      <AddDrugModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onAddDrug={handleAddDrug} 
+      />
     </div>
   );
 }

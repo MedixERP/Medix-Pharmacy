@@ -24,9 +24,9 @@ const AddProduct = lazy(() => import('../pages/supplier/AddProduct'));
 const EditProduct = lazy(() => import('../pages/supplier/EditProduct'));
 const AnalyticsReports = lazy(() => import('../pages/supplier/Reports'));
 const Settings = lazy(() => import('../pages/supplier/Settings'));
-// ضيفي عمل Imports للصفحتين الجداد فوق مع باقي صفحات الـ Supplier
 const CompanyProfile = lazy(() => import('../pages/supplier/CompanyProfile'));
 const NotificationsPage = lazy(() => import('../pages/supplier/Notifications'));
+
 // Pharmacist Pages
 const PharmacistDashboard = lazy(() => import('../pages/pharmacist/Dashboard'));
 
@@ -38,31 +38,27 @@ const PlaceholderPage = ({ title }: { title: string }) => (
   </div>
 );
 
-// ⚡ الـ Redirect الذكي: بيقرأ الـ Role الحالية ويوجّه للمكان الصح فوراً من المسار الرئيسي "/"
+// ⚡ الـ Redirect الذكي والمعدّل:
+// لما المستخدم يفتح أول مسار في الموقع "/"، هيتم عرضه للـ LandingPage مباشرة
+// إذا كان مسجل دخول بالفعل وضغط على زر معين، الـ Store هيتكفل بتوجيهه للوحة التحكم الخاصة به
 const RootRedirect = () => {
   const { user, isAuthenticated } = useAuth();
   
-  if (!isAuthenticated) return <Navigate to={ROUTES.LOGIN} replace />;
-  
-  const role = user?.role?.trim().toUpperCase();
-  if (role === 'PHARMACIST') return <Navigate to={ROUTES.PHARMACIST.DASHBOARD} replace />;
-  if (role === 'SUPPLIER') return <Navigate to={ROUTES.SUPPLIER.DASHBOARD} replace />;
-  if (role === 'ADMIN') return <Navigate to={ROUTES.ADMIN.DASHBOARD} replace />;
-  
-  return <Navigate to={ROUTES.LOGIN} replace />;
+  // 🌟 التعديل السحري: لو المستخدم داخل المسار الرئيسي، اعرضي الـ LandingPage فوراً
+  return <LandingPage />;
 };
 
 export default function AppRoutes() {
   return (
     <Suspense 
-      fallback={
+      fallback = {
         <div className="h-screen w-screen flex items-center justify-center bg-[#f8fafc]">
           <div className="animate-spin rounded-full h-10 w-10 border-4 border-[#3B81B7] border-t-transparent"></div>
         </div>
       }
     >
       <Routes>
-        {/* التوجيه التلقائي الديناميكي للمسار الرئيسي بناءً على الـ Role لمنع الـ Access Denied */}
+        {/* 🌟 الآن المسار الرئيسي يفتح الـ Landing Page مباشرة بدون قيود */}
         <Route path="/" element={<RootRedirect />} />
 
         {/* 1. Public Routes */}
@@ -85,7 +81,7 @@ export default function AppRoutes() {
               <Route path="/supplier/settings" element={<Settings />} />
               <Route path={ROUTES.SUPPLIER.INCOMING_ORDERS} element={<IncomingOrders />} />
               <Route path="/supplier/profile" element={<CompanyProfile />} />
-    <Route path="/supplier/notifications" element={<NotificationsPage />} />
+              <Route path="/supplier/notifications" element={<NotificationsPage />} />
             </Route>
           </Route>
 

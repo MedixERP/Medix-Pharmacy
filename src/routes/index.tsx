@@ -29,7 +29,7 @@ const NotificationsPage = lazy(() => import('../pages/supplier/Notifications'));
 
 // Pharmacist Pages
 const PharmacistDashboard = lazy(() => import('../pages/pharmacist/Dashboard'));
-
+const PharmacistDrugs = lazy(() => import('../pages/pharmacist/Drugs'));
 // مكون مؤقت احترافي للشاشات غير المكتوبة بعد
 const PlaceholderPage = ({ title }: { title: string }) => (
   <div className="p-6 bg-white rounded-2xl border border-slate-100 shadow-[0_10px_30px_rgba(27,42,73,0.02)] animate-in fade-in duration-300">
@@ -89,10 +89,9 @@ export default function AppRoutes() {
           <Route element={<RoleGuard allowedRoles={['PHARMACIST', 'pharmacist']} />}>
             <Route element={<AppLayout />}>
               <Route path={ROUTES.PHARMACIST.DASHBOARD} element={<PharmacistDashboard />} />
-              <Route path={ROUTES.PHARMACIST.SCAN_PRESCRIPTION} element={<PlaceholderPage title="Scan Prescription" />} />
+              <Route path={ROUTES.PHARMACIST.SCAN_PRESCRIPTION} element={<PharmacistDrugs/>} />
               <Route path={ROUTES.PHARMACIST.DRUG_SEARCH} element={<PlaceholderPage title="Drug Search & Inventory" />} />
               <Route path={ROUTES.PHARMACIST.DRUG_ALTERNATIVES} element={<PlaceholderPage title="Drug Alternatives" />} />
-              <Route path={ROUTES.PHARMACIST.PATIENT_PROFILE} element={<PlaceholderPage title="Patient Profile" />} />
             </Route>
           </Route>
 

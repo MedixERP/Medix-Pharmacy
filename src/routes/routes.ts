@@ -21,11 +21,10 @@ export const ROUTES = {
   // Pharmacist Role Controls
   PHARMACIST: {
     DASHBOARD: '/pharmacist/dashboard',
-    SCAN_PRESCRIPTION: '/pharmacist/scan',
-    DRUG_SEARCH: '/pharmacist/search',
-    DRUG_ALTERNATIVES: '/pharmacist/alternatives',
+    SCAN_PRESCRIPTION: '/pharmacist/Drugs',
+    DRUG_SEARCH: '/pharmacist/Inventory',
+    DRUG_ALTERNATIVES: '/pharmacist/Settings',
     DRUG_INTERACTIONS: '/pharmacist/interactions',
-    PATIENT_PROFILE: '/pharmacist/patient',
   },
 
   // Supplier Role Controls

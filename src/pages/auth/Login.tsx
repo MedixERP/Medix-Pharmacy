@@ -9,7 +9,7 @@ import {
   FlaskConical, 
   CircleDollarSign, 
   User,
-  Lock,
+  Truck, // استيراد أيقونة التوريد للموردين
   Check
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -17,8 +17,8 @@ import { cn } from '../../lib/cn';
 import { authStore } from '../../store/authStore'; 
 import { ROUTES } from '../../routes/routes';
 
-// تعريف أنواع الـ Roles المتاحة في التصميم
-type UserRole = 'ADMIN' | 'PHARMACIST' | 'CASHIER' | 'CUSTOMER';
+// تحديث الـ Roles لتشمل الـ SUPPLIER صراحةً
+type UserRole = 'ADMIN' | 'SUPPLIER' | 'PHARMACIST' | 'CASHIER' | 'CUSTOMER';
 
 const Login: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState<UserRole>('ADMIN');
@@ -39,7 +39,7 @@ const Login: React.FC = () => {
       const lowerEmail = email.trim().toLowerCase();
       let mockUser = null;
 
-      // الـ Mock Database مع دعم الـ Roles المحددة
+      // الـ Mock Database المحاكية للبيانات الحقيقية
       if (lowerEmail === 'pharmacist@medix.com' && password === 'Pharmacist@2026') {
         mockUser = { id: 'user_01', name: 'Nouran Hammad (Pharmacist)', email: 'pharmacist@medix.com', role: 'PHARMACIST' };
       } else if (lowerEmail === 'supplier@medix.com' && password === 'Supplier@2026') {
@@ -54,6 +54,7 @@ const Login: React.FC = () => {
         authStore.getState().login(mockUser, 'mock-jwt-token-xyz-123');
         setIsLoading(false);
 
+        // التوجيه الذكي والديناميكي بناءً على دور المستخدم بعد نجاح الدخول
         if (mockUser.role === 'PHARMACIST') navigate(ROUTES.PHARMACIST.DASHBOARD, { replace: true });
         else if (mockUser.role === 'SUPPLIER') navigate(ROUTES.SUPPLIER.DASHBOARD, { replace: true });
         else if (mockUser.role === 'ADMIN') navigate(ROUTES.ADMIN.DASHBOARD, { replace: true });
@@ -65,10 +66,11 @@ const Login: React.FC = () => {
     }, 1200);
   };
 
+  // مصفوفة إعداد الأزرار لتشمل الأدمن والمورد سوياً في واجهة الاختيار (Grid)
   const rolesConfig = [
     { id: 'ADMIN' as UserRole, label: 'Admin', icon: ShieldCheck },
+    { id: 'SUPPLIER' as UserRole, label: 'Supplier', icon: Truck },
     { id: 'PHARMACIST' as UserRole, label: 'Pharmacist', icon: FlaskConical },
-    { id: 'CASHIER' as UserRole, label: 'Cashier', icon: CircleDollarSign },
     { id: 'CUSTOMER' as UserRole, label: 'Customer', icon: User },
   ];
 
@@ -81,7 +83,6 @@ const Login: React.FC = () => {
         <div className="absolute top-[-20%] left-[-20%] w-[80%] h-[80%] bg-[#4285F4] rounded-full blur-[160px] opacity-15" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#00D2FF] rounded-full blur-[140px] opacity-10" />
 
-        {/* الـ Logo العلوي مع شادو أزرق متدرج ومضيء ملائم للخلفية الداكنة */}
         <div className="relative z-10 flex items-center gap-2.5">
           <img 
             src="/logo.jpeg" 
@@ -91,7 +92,6 @@ const Login: React.FC = () => {
           <span className="text-white font-bold text-lg tracking-tight">medix</span>
         </div>
 
-        {/* الشكل المركزي (الكبسولات والـ Orbit الجرافيكس) */}
         <div className="relative z-10 flex flex-col items-center justify-center flex-1 my-8">
           <div className="w-72 h-72 relative flex items-center justify-center">
             <div className="absolute inset-0 border border-white/5 rounded-full" />
@@ -122,7 +122,7 @@ const Login: React.FC = () => {
           <div className="text-center max-w-sm mt-8">
             <h1 className="text-white text-2xl font-bold tracking-tight mb-3">Smart Pharmacy Management</h1>
             <p className="text-slate-400 text-sm leading-relaxed font-normal">
-              Unified ERP for dispensing, inventory, billing, and patient care — powered by real-time data.
+              Unified ERP for dispensing, inventory, billing, and supplier care — powered by real-time data.
             </p>
           </div>
         </div>
@@ -143,7 +143,6 @@ const Login: React.FC = () => {
       {/* 2. الجزء الأيمن (فورم تسجيل الدخول المظبوط بالمللي) */}
       <div className="w-full lg:w-[52%] flex flex-col justify-between p-8 sm:p-16 md:p-24 bg-white overflow-y-auto">
         
-        {/* شعار الموبايل والتابلت المستورد من البابليك مع الشادو الأزرق النظيف */}
         <div className="lg:hidden flex items-center gap-2 mb-12">
           <img 
             src="/logo.jpeg" 
@@ -161,7 +160,6 @@ const Login: React.FC = () => {
           transition={{ duration: 0.5, ease: 'easeOut' }}
           className="w-full max-w-[420px] mx-auto"
         >
-          {/* الـ Header الأساسي مع شادو أزرق ناعم مخصص للخلفية البيضاء للـ Desktop */}
           <div className="mb-8">
             <div className="hidden lg:flex items-center gap-2.5 mb-6">
               <img 
@@ -172,7 +170,7 @@ const Login: React.FC = () => {
               <span className="text-[#0B1E43] font-bold text-base tracking-tight">medix</span>
             </div>
             <h2 className="text-[26px] font-bold text-[#0B1E43] tracking-tight mb-1.5">Welcome Back to Medix</h2>
-            <p className="text-[14px] text-slate-400 font-normal">Manage your pharmacy smarter</p>
+            <p className="text-[14px] text-slate-400 font-normal">Manage your pharmacy portal smarter</p>
           </div>
 
           {error && (
@@ -183,7 +181,7 @@ const Login: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             
-            {/* كامب الـ SIGN IN AS (أزرار اختيار الـ Role) */}
+            {/* أزرار اختيار الـ Role المحدثة لتظهر الأدمن والمورد معاً في الجريد */}
             <div className="space-y-2">
               <label className="text-[11px] font-bold text-[#0B1E43] uppercase tracking-wider">Sign In As</label>
               <div className="grid grid-cols-4 gap-2.5">

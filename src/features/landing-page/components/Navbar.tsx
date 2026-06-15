@@ -65,13 +65,7 @@ const Navbar: React.FC = () => {
             Login
           </button>
           
-          {/* تم ربط روت الـ Register هنا بنفس الأسلوب الاحترافي */}
-          <button 
-            onClick={() => navigate('/register')}
-            className="bg-[#1B2A49] hover:bg-[#24375d] text-white text-sm px-5 py-2 rounded-full font-bold transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
-          >
-            Register
-          </button>
+       
         </div>
       </div>
     </motion.nav>

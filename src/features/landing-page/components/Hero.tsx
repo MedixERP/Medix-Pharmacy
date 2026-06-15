@@ -103,13 +103,7 @@ const Hero: React.FC = () => {
 
           <div className="flex flex-wrap gap-5 items-center">
             {/* ربط زر الـ Register */}
-            <AnimatedBorderButton 
-              primary 
-              icon={<FiArrowRight size={16} />} 
-              onClick={() => navigate('/register')}
-            >
-              Register Pharmacy
-            </AnimatedBorderButton>
+          
             
             {/* ربط زر الـ Sign In */}
             <AnimatedBorderButton 

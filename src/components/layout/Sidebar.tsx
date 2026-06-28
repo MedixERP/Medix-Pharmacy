@@ -97,14 +97,16 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   ];
 
   // 3. قائمة الأدمن (Admin Menu)
+ // 3. قائمة الأدمن (Admin Menu) - المحدثة بـ 9 عناصر كاملة حسب الفيجما
   const adminItems = [
-    { path: ROUTES.ADMIN.DASHBOARD, label: 'Admin Dashboard', icon: LayoutDashboard },
-    { path: ROUTES.ADMIN.USER_MANAGEMENT, label: 'User Management', icon: Users },
-    { path: ROUTES.ADMIN.DRUG_MANAGEMENT, label: 'Drug Management', icon: Layers },
+    { path: ROUTES.ADMIN.DASHBOARD, label: 'Dashboard', icon: LayoutDashboard },
+    { path: ROUTES.ADMIN.DRUG_MANAGEMENT, label: 'Drugs', icon: Layers },
+    { path: '/admin/inventory', label: 'Inventory', icon: Layers }, // شاشة مراقبة المخزون العام
+    { path: ROUTES.ADMIN.PURCHASE_ORDERS, label: 'Orders', icon: ShoppingBag },
     { path: ROUTES.ADMIN.SUPPLIER_MANAGEMENT, label: 'Suppliers', icon: UserCheck },
-    { path: ROUTES.ADMIN.PURCHASE_ORDERS, label: 'Purchase Orders', icon: ShoppingBag },
-    { path: ROUTES.ADMIN.REPORTS, label: 'Reports', icon: BarChart3 },
-  ];
+    { path: ROUTES.ADMIN.REPORTS, label: 'Analytics', icon: BarChart3 },
+    { path: ROUTES.ADMIN.USER_MANAGEMENT, label: 'Users', icon: Users },
+    { path: '/admin/settings', label: 'Settings', icon: Settings }];
 
   // 4. قائمة المريض (Patient Menu)
   const patientItems = [

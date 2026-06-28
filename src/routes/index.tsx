@@ -31,6 +31,16 @@ const NotificationsPage = lazy(() => import('../pages/supplier/Notifications'));
 const PharmacistDashboard = lazy(() => import('../pages/pharmacist/Dashboard'));
 const PharmacistDrugs = lazy(() => import('../pages/pharmacist/Drugs'));
 // مكون مؤقت احترافي للشاشات غير المكتوبة بعد
+const AdminDashboard = lazy(() => import('../pages/admin/Dashboard'));
+const UserManagement = lazy(() => import('../pages/admin/UserManagement'));
+const DrugManagement = lazy(() => import('../pages/admin/DrugManagement'));
+const SupplierManagement = lazy(() => import('../pages/admin/SupplierManagement'));
+const PurchaseOrders = lazy(() => import('../pages/admin/PurchaseOrders'));
+const AnalyticsReportAdmin = lazy(() => import('../pages/admin/Reports'));
+const InventoryManagement = lazy(() => import('../pages/admin/Inventory'));
+
+const AdminNotifications = lazy(() => import('../pages/admin/Notifications'));
+
 const PlaceholderPage = ({ title }: { title: string }) => (
   <div className="p-6 bg-white rounded-2xl border border-slate-100 shadow-[0_10px_30px_rgba(27,42,73,0.02)] animate-in fade-in duration-300">
     <h2 className="text-xl font-bold text-[#1b2a49] mb-2">{title} Screen</h2>
@@ -96,16 +106,24 @@ export default function AppRoutes() {
           </Route>
 
           {/* 👑 مجموعة مسارات الأدمن (Admin) بنفس الـ Layout والـ Styles بالضبط */}
-          <Route element={<RoleGuard allowedRoles={['ADMIN', 'admin']} />}>
-            <Route element={<AppLayout />}>
-              <Route path={ROUTES.ADMIN.DASHBOARD} element={<PlaceholderPage title="Admin Dashboard Overview" />} />
-              <Route path={ROUTES.ADMIN.USER_MANAGEMENT} element={<PlaceholderPage title="User Management (التحكم بالمستخدمين)" />} />
-              <Route path={ROUTES.ADMIN.DRUG_MANAGEMENT} element={<PlaceholderPage title="Global Drug Management" />} />
-              <Route path={ROUTES.ADMIN.SUPPLIER_MANAGEMENT} element={<PlaceholderPage title="Suppliers Verification (الموردين)" />} />
-              <Route path={ROUTES.ADMIN.PURCHASE_ORDERS} element={<PlaceholderPage title="Global Purchase Orders Trace" />} />
-              <Route path={ROUTES.ADMIN.REPORTS} element={<PlaceholderPage title="System Logs & Analytics Reports" />} />
-            </Route>
-          </Route>
+    {/* 👑 مجموعة مسارات الأدمن (Admin) المحدثة بالكامل بـ 9 مسارات متناسقة مع السايدبار */}
+<Route element={<RoleGuard allowedRoles={['ADMIN', 'admin']} />}>
+  <Route element={<AppLayout />}>
+    <Route path={ROUTES.ADMIN.DASHBOARD} element={<AdminDashboard />} />
+    <Route path={ROUTES.ADMIN.DRUG_MANAGEMENT} element={<DrugManagement />} />
+    
+    {/* المسار الجديد للمخزون الموضح في الفيجما */}
+    <Route path="/admin/inventory" element={<InventoryManagement  />} />
+    
+    <Route path={ROUTES.ADMIN.PURCHASE_ORDERS} element={<PurchaseOrders />} />
+    <Route path={ROUTES.ADMIN.SUPPLIER_MANAGEMENT} element={<SupplierManagement />} />
+    <Route path={ROUTES.ADMIN.REPORTS} element={<AnalyticsReports />} />
+    <Route path={ROUTES.ADMIN.USER_MANAGEMENT} element={<UserManagement />} />
+    <Route path="/admin/notifications" element={<AdminNotifications />} />
+    {/* مسار الإعدادات الجديد الخاص بالأدمن */}
+    <Route path="/admin/settings" element={<PlaceholderPage title="System Master Settings" />} />
+  </Route>
+</Route>
 
         </Route>
 

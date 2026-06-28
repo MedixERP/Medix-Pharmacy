@@ -108,7 +108,7 @@ export default function Navbar({ sidebarOpen, setSidebarOpen }: NavbarProps) {
   } else {
     navigate('/supplier/notifications');
   }
-}}
+}} 
             className="p-2.5 text-slate-500 hover:bg-slate-50 rounded-xl relative cursor-pointer transition-all"
             aria-label="View system notifications"
           >

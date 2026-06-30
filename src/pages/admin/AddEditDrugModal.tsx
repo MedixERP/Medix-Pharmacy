@@ -60,24 +60,27 @@ export default function AddEditDrug({ drugToEdit, onBack }: AddEditDrugProps) {
   };
 
   return (
-    // الالتزام بالمسافات الموحدة تماماً: 30px من فوق و 25px من الجوانب
-    <div className="animate-in fade-in duration-300 text-left relative pt-[30px] px-[25px] space-y-4">
+    // الصفحة كلها بقت flex column في النص (items-center) عشان الفورم يفضل في سنتر الشاشة
+    // والمسافات الموحدة لسه زي ما هي: 30px من فوق و 25px من الجوانب
+    <div className="animate-in fade-in duration-300 text-left relative pt-[30px] px-[25px] space-y-4 flex flex-col items-center">
       <SEOHead 
         title={isEditMode ? "Edit Drug" : "Add New Drug"} 
         description="Medix Drug Inventory Form - Modify catalog pricing, concentrations, and baseline notification thresholds." 
       />
 
-      {/* ⬅️ زر العودة لجدول الأدوية المطابق لـ image_72e99b.jpg */}
-      <button 
-        type="button"
-        onClick={onBack}
-        className="inline-flex items-center gap-2 text-gray-500 hover:text-blue-950 text-base font-normal font-['SF_Pro_Rounded'] leading-5 transition-colors cursor-pointer select-none"
-      >
-        <ArrowLeft size={18} strokeWidth={2.5} />
-        <span>Back to Drug List</span>
-      </button>
+      {/* ⬅️ زر العودة لجدول الأدوية - بنفس عرض الفورم (896px) عشان يبان متراكب فوق الفورم في النص، مش لاصق في الحيط */}
+      <div className="w-full max-w-[896px]">
+        <button 
+          type="button"
+          onClick={onBack}
+          className="inline-flex items-center gap-2 text-gray-500 hover:text-blue-950 text-base font-normal font-['SF_Pro_Rounded'] leading-5 transition-colors cursor-pointer select-none"
+        >
+          <ArrowLeft size={18} strokeWidth={2.5} />
+          <span>Back to Drug List</span>
+        </button>
+      </div>
 
-      {/* 📦 حاوية الفورم الرئيسية المصممة بـ shadow وتحديداً rounded-2xl كالتصميم الفعلي */}
+      {/* 📦 حاوية الفورم الرئيسية المصممة بـ shadow وتحديداً rounded-2xl كالتصميم الفعلي - دلوقتي في نص الصفحة افقياً */}
       <div className="w-full max-w-[896px] bg-white rounded-2xl shadow-[0px_4px_16px_0px_rgba(59,129,183,0.15)] border border-slate-100 overflow-hidden flex flex-col">
         
         {/* هيدر نص البيانات الداخلي للفورم */}

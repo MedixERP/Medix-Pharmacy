@@ -1,6 +1,6 @@
 // 🟢 السطر الأول في الملف بعد التعديل:
-import React, { useState } from 'react';
-import { Search, Plus, ChevronDown, Edit2, Trash2, Pill, AlertTriangle, X } from 'lucide-react'; // تأكدي من وجود X هنا
+import React, { useState, useEffect, useRef } from 'react';
+import { Search, Plus, ChevronDown, Edit2, Trash2, Pill, CheckCircle2, Trash, X, Sparkles } from 'lucide-react';
 import SEOHead from '../../components/shared/SEOHead';
 import { DataTable } from '../../components/shared/DataTable'; 
 import AddEditDrug from './AddEditDrugModal';
@@ -15,15 +15,77 @@ interface Drug {
   concentration?: string;
 }
 
+// 🟢 أنواع التوست المختلفة: كل عملية بستايل وألوان خاصة بيها لكنها كلها بنفس "روح" الثيم
+type ToastType = 'add' | 'edit' | 'delete';
+
+interface ToastState {
+  visible: boolean;
+  type: ToastType;
+  title: string;
+  message: string;
+}
+
+// 🟢 خريطة الستايلات لكل نوع توست (الألوان مأخوذة من ألوان المشروع نفسه: cyan/blue gradient + rose للحذف)
+const toastStyles: Record<
+  ToastType,
+  {
+    icon: React.ReactNode;
+    iconWrap: string;
+    ring: string;
+    bar: string;
+    glow: string;
+  }
+> = {
+  add: {
+    icon: <Sparkles size={20} />,
+    iconWrap: 'bg-gradient-to-br from-cyan-500 to-blue-500 text-white',
+    ring: 'ring-1 ring-cyan-100',
+    bar: 'bg-gradient-to-r from-cyan-500 to-blue-500',
+    glow: 'shadow-[0px_12px_32px_-4px_rgba(59,129,183,0.35)]',
+  },
+  edit: {
+    icon: <CheckCircle2 size={20} />,
+    iconWrap: 'bg-gradient-to-br from-blue-500 to-indigo-500 text-white',
+    ring: 'ring-1 ring-blue-100',
+    bar: 'bg-gradient-to-r from-blue-500 to-indigo-500',
+    glow: 'shadow-[0px_12px_32px_-4px_rgba(59,90,183,0.35)]',
+  },
+  delete: {
+    icon: <Trash size={20} />,
+    iconWrap: 'bg-gradient-to-br from-rose-500 to-red-500 text-white',
+    ring: 'ring-1 ring-rose-100',
+    bar: 'bg-gradient-to-r from-rose-500 to-red-500',
+    glow: 'shadow-[0px_12px_32px_-4px_rgba(231,76,60,0.35)]',
+  },
+};
+
 export default function DrugManagement() {
   const [view, setView] = useState<'list' | 'form'>('list');
   const [selectedDrug, setSelectedDrug] = useState<Drug | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
-  // States الخاصة بـ Pop-up الحذف الاحترافي
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [drugToDelete, setDrugToDelete] = useState<Drug | null>(null);
+  // 🟢 توست واحد عام لكل العمليات (Add / Edit / Delete)
+  const [toast, setToast] = useState<ToastState>({ visible: false, type: 'add', title: '', message: '' });
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showToast = (type: ToastType, title: string, message: string) => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    // نقفل الرسالة لحظياً لو فيه واحدة شغالة عشان الأنيميشن يتعمل من جديد كل مرة
+    setToast({ visible: false, type, title, message });
+    requestAnimationFrame(() => {
+      setToast({ visible: true, type, title, message });
+    });
+    toastTimerRef.current = setTimeout(() => {
+      setToast(prev => ({ ...prev, visible: false }));
+    }, 3200);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    };
+  }, []);
 
   const [drugsCatalog, setDrugsCatalog] = useState<Drug[]>([
     { id: '1', name: 'Panadol', scientific: 'Paracetamol', price: '50 EGP', quantity: 150, minThreshold: 50, concentration: '500mg' },
@@ -52,19 +114,25 @@ export default function DrugManagement() {
     setView('form');
   };
 
-  // فتح التنبيه المنبثق للحذف وتحديد الدواء المستهدف
-  const openDeleteModal = (drug: Drug) => {
-    setDrugToDelete(drug);
-    setIsDeleteModalOpen(true);
+  // 🟢 الحذف مباشر بدون Confirm Modal، وبعده توست أحمر (delete)
+  const handleDeleteClick = (drug: Drug) => {
+    setDrugsCatalog(prev => prev.filter(d => d.id !== drug.id));
+    showToast('delete', 'Drug Deleted', `"${drug.name}" has been removed from the catalog.`);
   };
 
-  // تأكيد عملية الحذف النهائية
-  const confirmDelete = () => {
-    if (drugToDelete) {
-      setDrugsCatalog(prev => prev.filter(drug => drug.id !== drugToDelete.id));
-      setIsDeleteModalOpen(false);
-      setDrugToDelete(null);
+  // 🟢 دالة تُستخدم من فورم الإضافة/التعديل (AddEditDrug) لإطلاق التوست المناسب بعد الحفظ
+  const handleDrugSaved = (drug: Omit<Drug, 'id'>, isEdit: boolean) => {
+    if (isEdit && selectedDrug) {
+      setDrugsCatalog(prev =>
+        prev.map(d => (d.id === selectedDrug.id ? { ...d, ...drug } : d))
+      );
+      showToast('edit', 'Drug Updated', `"${drug.name}" was updated successfully.`);
+    } else {
+      const newDrug: Drug = { ...drug, id: String(Date.now()) };
+      setDrugsCatalog(prev => [newDrug, ...prev]);
+      showToast('add', 'Drug Added', `"${drug.name}" was added to the catalog.`);
     }
+    setView('list');
   };
 
   const indexOfFirstItem = (currentPage - 1) * itemsPerPage;
@@ -123,7 +191,7 @@ export default function DrugManagement() {
             </button>
             <button 
               type="button"
-              onClick={() => openDeleteModal(drug)}
+              onClick={() => handleDeleteClick(drug)}
               className="text-gray-400 hover:text-rose-600 transition-colors p-1 rounded-md cursor-pointer"
             >
               <Trash2 size={16} />
@@ -168,7 +236,7 @@ export default function DrugManagement() {
         </div>
         <div className="flex justify-end gap-3 pt-2">
           <button type="button" onClick={() => handleEditClick(drug)} className="text-gray-400 hover:text-blue-600 p-1"><Edit2 size={15} /></button>
-          <button type="button" onClick={() => openDeleteModal(drug)} className="text-gray-400 hover:text-rose-600 p-1"><Trash2 size={15} /></button>
+          <button type="button" onClick={() => handleDeleteClick(drug)} className="text-gray-400 hover:text-rose-600 p-1"><Trash2 size={15} /></button>
         </div>
       </div>
     );
@@ -182,9 +250,12 @@ export default function DrugManagement() {
           concentration: selectedDrug.concentration || '500mg'
         } : null}
         onBack={() => setView('list')} 
+        onSaved={handleDrugSaved}
       />
     );
   }
+
+  const activeStyle = toastStyles[toast.type];
 
   return (
     <div className="animate-in fade-in duration-300 text-left relative pt-[2px] px-[2px] space-y-6">
@@ -245,54 +316,66 @@ export default function DrugManagement() {
         onPageChange={(page) => setCurrentPage(page)}
       />
 
-      {/* 🔴 بوب الحذف الاحترافي الجميل (Delete Pop-up Modal) */}
-      {isDeleteModalOpen && drugToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-blue-950/40 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative animate-in zoom-in-95 duration-200 text-center space-y-4">
-            
-            {/* زر الإغلاق العلوي */}
-            <button 
-              type="button" 
-              onClick={() => setIsDeleteModalOpen(false)} 
-              className="absolute right-4 top-4 text-slate-400 hover:text-slate-600 p-1.5 rounded-full hover:bg-slate-50 cursor-pointer"
-            >
-              <X size={18} />
-            </button>
+      {/* 
+        🟢 التوست الجديد "الواو": 
+        - متمركز تحت الـ navbar بمسافة كافية (top-24) مش لاصق في أعلى الشاشة 
+        - بستايل زجاجي (glassmorphism) مع جرادينت لكل نوع عملية 
+        - أنيميشن slide-in من اليمين + شريط تقدّم متحرك بنفس لون العملية 
+        - شغالة مع 3 عمليات: Add (سماوي/أزرق) - Edit (أزرق/إندجو) - Delete (أحمر/روز)
+      */}
+      <div
+        className={`fixed top-24 right-6 z-50 transition-all duration-500 ease-out ${
+          toast.visible
+            ? 'opacity-100 translate-x-0 scale-100'
+            : 'opacity-0 translate-x-10 scale-95 pointer-events-none'
+        }`}
+      >
+        <div
+          className={`relative flex items-start gap-3.5 w-[340px] bg-white/90 backdrop-blur-md border border-white/60 ${activeStyle.ring} ${activeStyle.glow} rounded-3xl px-5 py-4 overflow-hidden`}
+        >
+          {/* توهج خفيف في الخلفية بلون العملية */}
+          <div className={`absolute -top-10 -right-10 w-28 h-28 rounded-full opacity-20 blur-2xl ${activeStyle.bar}`} />
 
-            {/* الأيقونة التحذيرية بتدرج الفيجما الفخم */}
-            <div className="mx-auto size-14 bg-rose-50 text-red-500 rounded-2xl flex items-center justify-center shadow-inner border border-rose-100/20">
-              <AlertTriangle size={28} />
-            </div>
+          <div className={`relative shrink-0 size-11 rounded-2xl flex items-center justify-center shadow-md ${activeStyle.iconWrap}`}>
+            {activeStyle.icon}
+          </div>
 
-            {/* النصوص التوضيحية */}
-            <div className="space-y-2 select-none">
-              <h3 className="text-xl font-bold text-blue-950 font-['SF_Pro_Rounded']">Delete Product</h3>
-              <p className="text-sm text-gray-500 font-normal font-['SF_Pro_Rounded'] px-2">
-                Are you sure you want to delete <span className="font-bold text-slate-700">"{drugToDelete.name}"</span>? This action cannot be undone.
-              </p>
-            </div>
+          <div className="relative flex-1 pt-0.5">
+            <p className="text-[15px] font-bold text-blue-950 font-['SF_Pro_Rounded'] leading-5">
+              {toast.title}
+            </p>
+            <p className="text-[13px] text-gray-500 font-normal font-['SF_Pro_Rounded'] mt-1 leading-snug">
+              {toast.message}
+            </p>
+          </div>
 
-            {/* أزرار الإجراءات */}
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <button 
-                type="button" 
-                onClick={() => setIsDeleteModalOpen(false)} 
-                className="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-sm py-3 rounded-xl transition-all cursor-pointer font-['SF_Pro_Rounded']"
-              >
-                Cancel
-              </button>
-              <button 
-                type="button" 
-                onClick={confirmDelete} 
-                className="bg-[#E74C3C] hover:bg-red-600 text-white font-bold text-sm py-3 rounded-xl shadow-[0px_4px_12px_0px_rgba(231,76,60,0.30)] transition-all cursor-pointer font-['SF_Pro_Rounded'] active:scale-95"
-              >
-                Delete
-              </button>
-            </div>
+          <button
+            type="button"
+            onClick={() => setToast(prev => ({ ...prev, visible: false }))}
+            className="relative shrink-0 text-slate-400 hover:text-slate-600 p-1 rounded-full hover:bg-slate-100/70 cursor-pointer transition-colors"
+          >
+            <X size={14} />
+          </button>
 
+          {/* شريط التقدّم أسفل الكارت */}
+          <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-slate-100/70">
+            <div
+              key={toast.visible ? `${toast.type}-${toast.message}` : 'idle'}
+              className={`h-full ${activeStyle.bar} ${toast.visible ? 'toast-progress' : ''}`}
+            />
           </div>
         </div>
-      )}
+      </div>
+
+      <style>{`
+        @keyframes toastProgress {
+          from { width: 100%; }
+          to { width: 0%; }
+        }
+        .toast-progress {
+          animation: toastProgress 3.2s linear forwards;
+        }
+      `}</style>
     </div>
   );
 }

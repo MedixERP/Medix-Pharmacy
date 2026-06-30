@@ -123,9 +123,14 @@ export default function Navbar({ sidebarOpen, setSidebarOpen }: NavbarProps) {
         </div>
 
         {/* كارت البروفايل المتكامل والذكي للفيجما مع تفعيل الـ cursor-pointer */}
+        {/* 
+          الـ Responsive logic بتاعت الكارت:
+          - موبايل وتابلت (لحد lg): يظهر الأفتار بس، من غير الاسم، والكارت بيبقى دايرة كاملة (rounded-full) شكلها أنضف وأحلى لما يكون فيه عنصر واحد جوه.
+          - من lg لفوق (شاشات كبيرة): يظهر الأفتار + الاسم + الرول مع بعض، والكارت بيبقى rounded-xl عشان يناسب المحتوى المستطيل.
+        */}
         <div 
           onClick={() => navigate('/supplier/profile')}
-          className="flex items-center gap-3 cursor-pointer group p-1 rounded-xl sm:rounded-full md:rounded-xl hover:bg-slate-50/50 transition-colors"
+          className="flex items-center gap-3 cursor-pointer group p-1 rounded-full lg:rounded-xl hover:bg-slate-50/50 transition-colors"
           role="button"
           aria-label="View user profile settings"
         >
@@ -136,8 +141,8 @@ export default function Navbar({ sidebarOpen, setSidebarOpen }: NavbarProps) {
             {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
           </div>
           
-          {/* التكست المنسق بالخطوط الاحترافية الموحدة */}
-          <div className="hidden sm:block text-left select-none">
+          {/* التكست المنسق بالخطوط الاحترافية الموحدة - يظهر بس من شاشات الديسكتوب الكبيرة (lg) لفوق */}
+          <div className="hidden lg:block text-left select-none">
             <h4 
               className="text-[14px] font-bold text-[#1b2a49] tracking-wide group-hover:text-blue-600 transition-colors capitalize"
               style={{ fontFamily: '"SF Pro Rounded", "Arimo", sans-serif' }}

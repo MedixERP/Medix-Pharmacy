@@ -117,7 +117,7 @@ export default function AppRoutes() {
     
     <Route path={ROUTES.ADMIN.PURCHASE_ORDERS} element={<PurchaseOrders />} />
     <Route path={ROUTES.ADMIN.SUPPLIER_MANAGEMENT} element={<SupplierManagement />} />
-    <Route path={ROUTES.ADMIN.REPORTS} element={<AnalyticsReports />} />
+    <Route path={ROUTES.ADMIN.REPORTS} element={<AnalyticsReportAdmin />} />
     <Route path={ROUTES.ADMIN.USER_MANAGEMENT} element={<UserManagement />} />
     <Route path="/admin/notifications" element={<AdminNotifications />} />
     {/* مسار الإعدادات الجديد الخاص بالأدمن */}

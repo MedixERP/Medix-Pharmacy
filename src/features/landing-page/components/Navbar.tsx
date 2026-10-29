@@ -1,0 +1,75 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+
+const Navbar: React.FC = () => {
+  const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  return (
+    <motion.nav
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.7, ease: 'easeOut' }}
+      className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-500 ${
+        scrolled
+          ? 'bg-white/80 backdrop-blur-xl border-b border-slate-200/50 shadow-sm'
+          : 'bg-transparent'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+        {/* Logo Section */}
+        <a href="#home" className="flex items-center gap-2.5 cursor-pointer group">
+          <img 
+            src="/logo.jpeg" 
+            alt="Medix Logo" 
+            className="w-9 h-9 object-contain shadow-sm group-hover:scale-105 group-hover:shadow-cyan-500/10 transition-all duration-300 rounded-xl"
+          />
+          <span className="font-bold text-xl text-[#1B2A49] tracking-tight">Medix</span>
+        </a>
+
+        {/* Center Links */}
+        <ul className="hidden md:flex items-center gap-8 text-[14px] font-semibold text-slate-600">
+          {[
+            { href: '#home', label: 'Home' },
+            { href: '#core-features', label: 'Core Features' },
+            { href: '#ai-capabilities', label: 'AI Capabilities' },
+            { href: '#project-scope', label: 'Project Scope' },
+          ].map((link) => (
+            <li key={link.href}>
+              <a
+                href={link.href}
+                className="relative text-slate-600 hover:text-[#1B2A49] transition-colors duration-200 after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-cyan-500 after:transition-all after:duration-300 hover:after:w-full"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        {/* CTA Actions Group */}
+        <div className="flex items-center gap-3">
+          {/* تم ربط روت اللوجين هنا بـ onClick وتوجيهه للمسار الصحيح */}
+          <button 
+            onClick={() => navigate('/login')}
+            className="text-[#1B2A49] text-sm font-bold cursor-pointer hover:bg-slate-100 px-4 py-2 rounded-full transition-all duration-200"
+          >
+            Login
+          </button>
+          
+       
+        </div>
+      </div>
+    </motion.nav>
+  );
+};
+
+export default Navbar;
